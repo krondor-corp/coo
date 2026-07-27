@@ -19,21 +19,17 @@ function platformAsset(assets: ReleaseAsset[], match: RegExp) {
 function Logomark() {
   return (
     <svg viewBox="0 0 32 32" className="logomark" aria-hidden="true">
-      <path
-        d="M11 6 L7 6 L7 26 L11 26"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={2.75}
-        strokeLinecap="square"
-      />
-      <path
-        d="M21 6 L25 6 L25 26 L21 26"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={2.75}
-        strokeLinecap="square"
-      />
-      <circle cx="16" cy="16" r="2.25" fill="currentColor" />
+      <g stroke="currentColor" strokeWidth={1.5} strokeLinecap="round">
+        <line x1="6" y1="5" x2="6" y2="27" />
+        <line x1="13" y1="5" x2="13" y2="27" />
+        <line x1="20" y1="5" x2="20" y2="27" />
+        <line x1="27" y1="5" x2="27" y2="27" />
+        <line x1="6" y1="9" x2="27" y2="9" strokeWidth={2.5} />
+        <line x1="6" y1="16" x2="27" y2="16" strokeWidth={1} />
+        <line x1="6" y1="23" x2="27" y2="23" strokeWidth={1} />
+      </g>
+      <circle cx="13" cy="16" r="2.25" fill="currentColor" />
+      <circle cx="27" cy="23" r="2.25" fill="currentColor" />
     </svg>
   );
 }
