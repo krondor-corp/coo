@@ -1,8 +1,6 @@
 import { readSongSource } from "@repo/core";
 import { type Ref, useMemo, useState } from "react";
 
-const DEDICATED_FIELDS = ["title", "author", "key", "tempo", "tuning"];
-
 const COMMON_TUNINGS = [
   { name: "Standard", notes: "E A D G B E" },
   { name: "Drop D", notes: "D A D G B E" },
@@ -35,9 +33,6 @@ export function MetadataBar({
   const metadata = useMemo(
     () => readSongSource(source)?.metadata ?? {},
     [source],
-  );
-  const fieldChips = Object.keys(metadata).filter(
-    (key) => !DEDICATED_FIELDS.includes(key),
   );
   const [tuningOpen, setTuningOpen] = useState(false);
 
@@ -130,22 +125,6 @@ export function MetadataBar({
           )}
         </span>
       </div>
-      {fieldChips.length > 0 && (
-        <div className="song-tags">
-          {fieldChips.map((name) => (
-            <span className="tag-chip tag-chip-field" key={name}>
-              <span className="tag-chip-label">{name}</span>
-              <button
-                type="button"
-                aria-label={`Remove ${name}`}
-                onClick={() => onChange(name, "")}
-              >
-                ×
-              </button>
-            </span>
-          ))}
-        </div>
-      )}
     </header>
   );
 }
