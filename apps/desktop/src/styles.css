@@ -1,29 +1,4 @@
-:root {
-  color-scheme: light dark;
-  --bg: #faf9f6;
-  --bg-raised: #ffffff;
-  --border: #e2ddd3;
-  --text: #26231d;
-  --text-muted: #8a8477;
-  --accent: #b5651d;
-  --accent-weak: #f1e3d3;
-  --danger: #b3392c;
-  --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
-  --serif: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #1c1a17;
-    --bg-raised: #262320;
-    --border: #3a352c;
-    --text: #ece7dc;
-    --text-muted: #9a9484;
-    --accent: #e0a458;
-    --accent-weak: #3a2f1f;
-    --danger: #e2685a;
-  }
-}
+@import "@repo/design-tokens/tokens.css";
 
 * {
   box-sizing: border-box;
@@ -501,8 +476,9 @@ button {
 }
 
 .chorddef-popover-actions button.chorddef-delete:hover {
-  border-color: #c0392b;
-  color: #c0392b;
+  border-color: var(--danger);
+  color: var(--danger);
+  font-weight: 600;
 }
 
 /* Raw source view */

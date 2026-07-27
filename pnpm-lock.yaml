@@ -20,6 +20,9 @@ importers:
       '@repo/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@repo/design-tokens':
+        specifier: workspace:*
+        version: link:../../packages/design-tokens
       '@tauri-apps/api':
         specifier: ^2.8.0
         version: 2.11.1
@@ -70,6 +73,37 @@ importers:
         specifier: ^3.2.4
         version: 3.2.7(@types/node@20.19.40)(jiti@1.21.7)(jsdom@26.1.0)
 
+  apps/site:
+    dependencies:
+      '@repo/design-tokens':
+        specifier: workspace:*
+        version: link:../../packages/design-tokens
+      react:
+        specifier: 19.0.0
+        version: 19.0.0
+      react-dom:
+        specifier: 19.0.0
+        version: 19.0.0(react@19.0.0)
+    devDependencies:
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
+      '@types/react':
+        specifier: ^19.1.0
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: ^19.1.0
+        version: 19.2.3(@types/react@19.2.14)
+      '@vitejs/plugin-react':
+        specifier: ^4.5.0
+        version: 4.7.0(vite@6.4.3(@types/node@20.19.40)(jiti@1.21.7))
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+      vite:
+        specifier: ^6.3.5
+        version: 6.4.3(@types/node@20.19.40)(jiti@1.21.7)
+
   packages/core:
     dependencies:
       chordsheetjs:
@@ -85,6 +119,8 @@ importers:
       vitest:
         specifier: ^3.2.4
         version: 3.2.7(@types/node@20.19.40)(jiti@1.21.7)(jsdom@26.1.0)
+
+  packages/design-tokens: {}
 
   packages/typescript-config: {}
 
