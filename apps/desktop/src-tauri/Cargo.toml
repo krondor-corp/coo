@@ -1,0 +1,25 @@
+[package]
+name = "coo"
+version = "0.1.0"
+description = "A minimal ChordPro editor"
+authors = ["Coo contributors"]
+edition = "2021"
+
+[lib]
+name = "coo_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-dialog = "2"
+tauri-plugin-fs = "2"
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true
