@@ -5,7 +5,9 @@ Coo is a keyboard-first desktop editor for writing ChordPro songs. It uses a Tau
 ## Structure
 
 - `apps/desktop` - Desktop application and Tauri shell
+- `apps/site` - Marketing/download site, deployed to GitHub Pages at [krondor-corp.github.io/coo](https://krondor-corp.github.io/coo)
 - `packages/core` - ChordPro parsing, document model, and rendering
+- `packages/design-tokens` - Shared color/font CSS custom properties, used by both apps so they can't drift out of sync
 - `packages/typescript-config` - Shared TypeScript configuration
 - `docs/tickets/command-editor.md` - Product brief for the command-based editor
 
@@ -54,4 +56,20 @@ Repeating a chorus or bridge heading via the insert menu clones the first existi
 
 ## Releases
 
-Pushing a `coo-v*` tag runs `.github/workflows/release-coo.yml`. It builds macOS, Windows, and Linux installers and attaches them to a GitHub Release with checksums.
+Versioning is automated with [release-please](https://github.com/googleapis/release-please) (`.github/workflows/release-please.yml`), following the convention used across Krondor Corp repos (see `krondor-corp/confit`):
+
+1. Commit to `main` using [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `chore:`, etc.) — only commits touching `apps/desktop/**` affect the app's version.
+2. release-please maintains a standing "chore(main): release coo X.Y.Z" PR, bumping the version across `apps/desktop/package.json`, `apps/desktop/src-tauri/tauri.conf.json`, and `apps/desktop/src-tauri/Cargo.toml` together, plus a changelog.
+3. Merging that PR tags `coo-vX.Y.Z`, which triggers `.github/workflows/release-coo.yml`: it builds macOS, Windows, and Linux installers and attaches them to a GitHub Release with checksums.
+
+**Repo secret required:** `RELEASE_PAT` — a classic PAT with `repo` scope. release-please runs as this token rather than the default `GITHUB_TOKEN` because GitHub blocks the default token's commits/tags from triggering other workflows — without a PAT, the tag it creates on merge wouldn't kick off `release-coo.yml`. Set it with:
+
+```bash
+gh secret set RELEASE_PAT --repo krondor-corp/coo
+```
+
+To release without waiting on release-please (e.g. a hotfix), trigger `release-coo.yml` directly:
+
+```bash
+gh workflow run release-coo.yml -f version=X.Y.Z
+```
