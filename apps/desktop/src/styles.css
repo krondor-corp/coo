@@ -335,6 +335,10 @@ button {
   padding-top: 20px;
 }
 
+.lyric-row.chord-only {
+  padding-top: 0;
+}
+
 .chord-lane {
   position: absolute;
   top: 0;
@@ -342,6 +346,20 @@ button {
   height: 20px;
   width: 100%;
   pointer-events: none;
+}
+
+/* Chord-only lines (no lyrics beneath, e.g. an instrumental intro) can't
+   anchor chords to character positions — there's no text to space them
+   out — so they flow left-to-right with even gaps instead of overlapping. */
+.chord-lane-flow {
+  position: static;
+  height: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 2px 0 6px;
+  pointer-events: auto;
 }
 
 .chord-token {
@@ -365,6 +383,11 @@ button {
 .chord-token:focus {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
+}
+
+.chord-token-flow {
+  position: static;
+  transform: none;
 }
 
 .chord-token-input {

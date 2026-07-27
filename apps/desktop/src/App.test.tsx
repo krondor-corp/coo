@@ -552,6 +552,48 @@ describe("chord token arrow-key navigation", () => {
   });
 });
 
+describe("chord-only lines (e.g. an instrumental intro)", () => {
+  it("lays chords out in a flowing row instead of overlapping when there's no lyric text to anchor to", async () => {
+    render(<App />);
+    // Clear the starter placeholder text and its chord — leaves a genuinely
+    // empty lyric line, like an instrumental intro bar with no words.
+    const starterChord = screen.getByRole("button", { name: "C" });
+    starterChord.focus();
+    fireEvent.keyDown(starterChord, { key: "Backspace" });
+    fireEvent.change(lyricLines()[0], { target: { value: "" } });
+
+    // No lyrics — just chords, like "[C]  [Am] [F] [G]" for an intro bar.
+    await insertChordAt(lyricLines()[0], 0, "C");
+    await insertChordAt(lyricLines()[0], 0, "Am");
+    await insertChordAt(lyricLines()[0], 0, "F");
+    await insertChordAt(lyricLines()[0], 0, "G");
+
+    const lane = document.querySelector(".chord-lane");
+    expect(lane?.classList.contains("chord-lane-flow")).toBe(true);
+
+    const tokens = Array.from(document.querySelectorAll(".chord-token"));
+    expect(tokens.length).toBe(4);
+    for (const token of tokens) {
+      // Flow layout doesn't anchor chords to a character position, so
+      // there's no inline "left" pinning them into an overlapping stack.
+      expect((token as HTMLElement).style.left).toBe("");
+      expect(token.classList.contains("chord-token-flow")).toBe(true);
+    }
+  });
+
+  it("uses absolute positioning above real lyric text instead", async () => {
+    render(<App />);
+    const line = lyricLines()[0];
+    fireEvent.change(line, { target: { value: "hello world" } });
+    await insertChordAt(lyricLines()[0], 0, "C");
+
+    const lane = document.querySelector(".chord-lane");
+    expect(lane?.classList.contains("chord-lane-flow")).toBe(false);
+    const token = document.querySelector(".chord-token") as HTMLElement;
+    expect(token.style.left).toBe("0ch");
+  });
+});
+
 describe("Acceptance scenario 5: open, edit, save preserves unknown metadata and directives", () => {
   it("round trips unknown frontmatter and directives through open -> edit -> save", async () => {
     const source = [

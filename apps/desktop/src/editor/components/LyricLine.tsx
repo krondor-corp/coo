@@ -50,6 +50,7 @@ export function LyricLine({
 }: Props) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const text = line.chars.join("");
+  const isChordOnly = text.trim().length === 0;
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
     const target = event.currentTarget;
@@ -90,12 +91,16 @@ export function LyricLine({
   }
 
   return (
-    <div className="lyric-row" data-line-id={line.id}>
-      <div className="chord-lane">
+    <div
+      className={`lyric-row${isChordOnly ? " chord-only" : ""}`}
+      data-line-id={line.id}
+    >
+      <div className={`chord-lane${isChordOnly ? " chord-lane-flow" : ""}`}>
         {line.chords.map((chord) => (
           <ChordToken
             key={chord.id}
             chord={chord}
+            layout={isChordOnly ? "flow" : "absolute"}
             focused={focus?.kind === "chord" && focus.chordId === chord.id}
             editing={
               focus?.kind === "chord" &&

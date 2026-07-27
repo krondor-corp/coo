@@ -5,6 +5,14 @@ type Props = {
   chord: ChordMark;
   focused: boolean;
   editing: boolean;
+  /**
+   * "absolute" anchors the chord above its character position in the lyric
+   * text (the normal case). "flow" lays chords out left-to-right with even
+   * spacing instead — used for chord-only lines (no real lyrics beneath
+   * them, e.g. an instrumental intro), where character-position anchoring
+   * packs chords too close together and their pills visually overlap.
+   */
+  layout: "absolute" | "flow";
   onRename: (name: string) => void;
   onDelete: () => void;
   onMove: (delta: number) => void;
@@ -22,6 +30,7 @@ export function ChordToken({
   chord,
   focused,
   editing,
+  layout,
   onRename,
   onDelete,
   onMove,
@@ -55,8 +64,10 @@ export function ChordToken({
     return (
       <input
         ref={inputRef}
-        className="chord-token chord-token-input"
-        style={{ left: `${chord.position}ch` }}
+        className={`chord-token chord-token-input${layout === "flow" ? " chord-token-flow" : ""}`}
+        style={
+          layout === "absolute" ? { left: `${chord.position}ch` } : undefined
+        }
         aria-label={`Rename chord ${chord.name}`}
         value={draft}
         onChange={(event) => setDraft(event.target.value)}
@@ -89,8 +100,10 @@ export function ChordToken({
     <button
       ref={buttonRef}
       type="button"
-      className={`chord-token${focused ? " focused" : ""}`}
-      style={{ left: `${chord.position}ch` }}
+      className={`chord-token${focused ? " focused" : ""}${layout === "flow" ? " chord-token-flow" : ""}`}
+      style={
+        layout === "absolute" ? { left: `${chord.position}ch` } : undefined
+      }
       onFocus={onFocus}
       onClick={() => onEnterEdit()}
       onKeyDown={(event) => {
