@@ -324,9 +324,49 @@ describe("keyboard navigation between lines", () => {
     });
 
     const diagram = document.querySelector(".fret-diagram");
-    expect(diagram?.getAttribute("width")).toBe(String(6 * 14));
-    expect(diagram?.querySelectorAll("text").length).toBe(2);
+    expect(diagram?.getAttribute("width")).toBe(String(6 * 20));
+    // Two "x" (muted) markers and one "o" (open string) marker.
+    expect(diagram?.querySelectorAll("text").length).toBe(3);
     expect(diagram?.querySelectorAll("circle").length).toBe(3);
+  });
+
+  it("displays a high-fret chord (e.g. 13 12) with a fret-position label instead of clipping it off", async () => {
+    render(<App />);
+    const line = lyricLines()[0];
+    line.focus();
+    fireEvent.keyDown(line, { key: "/" });
+    const paletteInput = await screen.findByLabelText("Command palette");
+    fireEvent.change(paletteInput, { target: { value: "Define" } });
+    fireEvent.keyDown(paletteInput, { key: "Enter" });
+    const nameInput = await screen.findByLabelText("Chord name");
+    fireEvent.change(nameInput, { target: { value: "F" } });
+    fireEvent.keyDown(nameInput, { key: "Enter" });
+
+    const chip = await screen.findByLabelText("Chord definition for F");
+    fireEvent.click(chip);
+
+    const fretsInput = await screen.findByLabelText(
+      "Frets (x = muted, 0 = open)",
+    );
+    fireEvent.change(fretsInput, { target: { value: "13 12 0 0 x x" } });
+    fireEvent.click(await screen.findByText("Save"));
+
+    await waitFor(() => {
+      expect(screen.queryByLabelText("Base fret")).toBeNull();
+    });
+
+    const diagram = document.querySelector(".fret-diagram");
+    // A 4-row window starting at fret 10 comfortably covers frets 12 and 13.
+    expect(diagram?.textContent).toContain("10fr");
+    expect(diagram?.querySelectorAll("circle").length).toBe(2);
+
+    const circles = Array.from(diagram?.querySelectorAll("circle") ?? []);
+    for (const circle of circles) {
+      const cy = Number(circle.getAttribute("cy"));
+      const height = Number(diagram?.getAttribute("height"));
+      expect(cy).toBeGreaterThan(0);
+      expect(cy).toBeLessThan(height);
+    }
   });
 });
 
