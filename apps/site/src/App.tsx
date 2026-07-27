@@ -16,6 +16,28 @@ function platformAsset(assets: ReleaseAsset[], match: RegExp) {
   return assets.find((asset) => match.test(asset.name));
 }
 
+function Logomark() {
+  return (
+    <svg viewBox="0 0 32 32" className="logomark" aria-hidden="true">
+      <path
+        d="M11 6 L7 6 L7 26 L11 26"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2.75}
+        strokeLinecap="square"
+      />
+      <path
+        d="M21 6 L25 6 L25 26 L21 26"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2.75}
+        strokeLinecap="square"
+      />
+      <circle cx="16" cy="16" r="2.25" fill="currentColor" />
+    </svg>
+  );
+}
+
 export function App() {
   const [release, setRelease] = useState<Release | null>(null);
 
@@ -39,6 +61,7 @@ export function App() {
   return (
     <main className="page">
       <header className="hero">
+        <Logomark />
         <span className="hero-eyebrow">A command-based ChordPro editor</span>
         <h1 className="hero-title">Coo</h1>
         <p className="hero-tagline">

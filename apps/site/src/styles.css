@@ -36,6 +36,12 @@ a {
   margin-bottom: 56px;
 }
 
+.logomark {
+  width: 28px;
+  height: 28px;
+  color: var(--text);
+}
+
 .hero-eyebrow {
   font-family: var(--mono);
   font-size: 13px;
