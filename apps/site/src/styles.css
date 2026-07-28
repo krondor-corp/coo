@@ -156,6 +156,11 @@ a {
   border-radius: 8px;
   padding: 14px 16px;
   overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.install-command::-webkit-scrollbar {
+  display: none;
 }
 
 .install-command code {
@@ -293,6 +298,11 @@ a {
   border-radius: 8px;
   padding: 16px;
   overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.doc-content pre::-webkit-scrollbar {
+  display: none;
 }
 
 .doc-content pre code {

@@ -82,7 +82,8 @@ install_macos() {
     [ -n "${url}" ] || { echo "Could not find ${dmg} in release ${version}" >&2; exit 1; }
 
     curl -fsSL -o "${TMP}/coo.dmg" "${url}"
-    mount_point="$(hdiutil attach "${TMP}/coo.dmg" -nobrowse -quiet | tail -1 | awk '{print $NF}')"
+    mount_point="$(hdiutil attach "${TMP}/coo.dmg" -nobrowse | grep -o '/Volumes/.*' | tail -1)"
+    [ -n "${mount_point}" ] || { echo "Could not mount ${dmg}" >&2; exit 1; }
 
     rm -rf "${INSTALL_DIR}/${APP_NAME}.app"
     cp -R "${mount_point}/${APP_NAME}.app" "${INSTALL_DIR}/"
