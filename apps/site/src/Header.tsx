@@ -1,5 +1,3 @@
-const REPO = "krondor-corp/coo";
-
 function Logomark() {
   return (
     <svg viewBox="0 0 32 32" className="logomark" aria-hidden="true">
@@ -27,9 +25,6 @@ export function Header() {
       </a>
       <nav className="site-nav">
         <a href="#/docs">Docs &rarr;</a>
-        <a href={`https://github.com/${REPO}`} target="_blank" rel="noreferrer">
-          GitHub
-        </a>
       </nav>
     </header>
   );

@@ -147,7 +147,6 @@ a {
 }
 
 .install-command {
-  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -155,19 +154,29 @@ a {
   background: #1a1a1a;
   border-radius: 8px;
   padding: 14px 16px;
-  overflow-x: auto;
-  scrollbar-width: none;
+  overflow: hidden;
 }
 
-.install-command::-webkit-scrollbar {
-  display: none;
-}
-
+/* truncate rather than scroll — the copy button is the point, not reading the whole line */
 .install-command code {
+  flex: 1;
+  min-width: 0;
   font-family: var(--mono);
   font-size: 14px;
   color: #f4f1ea;
-  white-space: pre;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.install-command .copy-btn {
+  border-color: rgba(244, 241, 234, 0.3);
+  color: rgba(244, 241, 234, 0.7);
+}
+
+.install-command .copy-btn:hover {
+  border-color: #f4f1ea;
+  color: #f4f1ea;
 }
 
 /* copy button, shared by the install command and rendered doc code blocks */
