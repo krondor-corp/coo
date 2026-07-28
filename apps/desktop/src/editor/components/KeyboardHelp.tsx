@@ -12,12 +12,15 @@ const GROUPS: Group[] = [
       ["/", "Add a chord, section, or note"],
       ["Enter", "Start a new line"],
       ["Backspace", "At the start of a line, join it to the one above"],
+      [`${MOD}Z`, "Undo"],
+      [`${MOD}${SHIFT}Z`, "Redo"],
     ],
   },
   {
     title: "Chords",
     shortcuts: [
       [`Tab / ${SHIFT}Tab`, "Go to the next / previous chord"],
+      ["Click", "Select a chord (double-click to edit its name)"],
       ["Type", "Rename the selected chord"],
       ["← →", "Nudge it one letter"],
       [`${SHIFT}← →`, "Nudge it to the next word"],

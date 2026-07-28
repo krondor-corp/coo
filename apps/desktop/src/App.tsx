@@ -75,6 +75,8 @@ export function App() {
     editRawSource,
     applyDocument,
     updateMetadata,
+    undo,
+    redo,
     makeId,
   } = useEditorState(EMPTY_SOURCE);
 
@@ -154,9 +156,9 @@ export function App() {
   }, []);
 
   const withDocument = useCallback(
-    (fn: (doc: EditorDocument) => EditorDocument) => {
+    (fn: (doc: EditorDocument) => EditorDocument, coalesce = false) => {
       if (!documentRef.current) return;
-      applyDocument(fn(documentRef.current));
+      applyDocument(fn(documentRef.current), coalesce);
     },
     [applyDocument],
   );
@@ -392,6 +394,19 @@ export function App() {
           setShowHelp((value) => !value);
           return;
         }
+        // Our own history, not the textarea's: an edit can span several lines
+        // (splitting, merging, moving a chord), which native undo can't reverse.
+        if (key === "z") {
+          event.preventDefault();
+          if (event.shiftKey) redo();
+          else undo();
+          return;
+        }
+        if (key === "y") {
+          event.preventDefault();
+          redo();
+          return;
+        }
       }
       // Tab cycles chords while you're inside the song — no modifier, and it works
       // on every keyboard layout. Elsewhere (metadata fields, toolbar, the insert
@@ -492,8 +507,10 @@ export function App() {
                         line={line}
                         focus={focus}
                         onChangeText={(text) =>
-                          withDocument((doc) =>
-                            setLyricText(doc, line.id, text),
+                          // Coalesced: a burst of typing is one undo step, not one per letter.
+                          withDocument(
+                            (doc) => setLyricText(doc, line.id, text),
+                            true,
                           )
                         }
                         onEnter={(caret) => {

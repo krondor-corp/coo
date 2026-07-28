@@ -105,7 +105,11 @@ export function ChordToken({
         layout === "absolute" ? { left: `${chord.position}ch` } : undefined
       }
       onFocus={onFocus}
-      onClick={() => onEnterEdit()}
+      // Clicking selects rather than jumping straight into renaming — otherwise
+      // the caret lands in a text input and Backspace edits the chord's name
+      // instead of deleting the chord, leaving no way to remove one by mouse.
+      // Type to rename, double-click to edit the name in place.
+      onDoubleClick={() => onEnterEdit()}
       onKeyDown={(event) => {
         if (event.key === "Enter") {
           event.preventDefault();

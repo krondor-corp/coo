@@ -22,7 +22,10 @@ Click a chord to select it, or press **Tab** to jump from chord to chord (**⇧T
 - **Shift+Arrow** — jump to the next word
 - **Backspace/Delete** — remove it
 - **Type anything** — rename it on the spot
+- **Double-click** — edit its name directly
 - **Escape** — go back to the lyrics
+
+Changed your mind about anything? **⌘Z** undoes, **⌘⇧Z** redoes.
 
 ## add a section, note, or chord diagram
 

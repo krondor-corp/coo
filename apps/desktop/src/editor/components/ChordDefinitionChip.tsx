@@ -120,6 +120,14 @@ export function ChordDefinitionChip({ definition, onChange, onDelete }: Props) {
         type="button"
         className="chorddef-chip"
         onClick={() => setOpen((value) => !value)}
+        // Backspace on the chip removes it, matching how chords delete — the
+        // popover's Delete button is the only other way in, and it's buried.
+        onKeyDown={(event) => {
+          if (event.key === "Backspace" || event.key === "Delete") {
+            event.preventDefault();
+            onDelete();
+          }
+        }}
         aria-label={`Chord definition for ${definition.name}`}
       >
         <FretDiagram definition={definition} />

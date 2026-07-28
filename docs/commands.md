@@ -9,6 +9,7 @@
 | `/` | Open the insert menu |
 | Enter | Start a new line |
 | Backspace at the start of a line | Join it to the line above |
+| `⌘Z` / `⌘⇧Z` | Undo / redo |
 | Arrow Up/Down | Move to the line above or below |
 | Arrow Left/Right at the end of a line | Move into the next line along |
 
@@ -31,6 +32,7 @@ Arrow Up/Down move the highlight, Enter picks one, and typing narrows the list.
 | --- | --- |
 | Tab / `⇧`Tab | Jump to the next or previous chord in the song |
 | Click a chord | Select it |
+| Double-click a chord | Edit its name directly |
 | Type anything | Rename the selected chord |
 | Arrow Left/Right | Nudge it one letter |
 | Shift+Arrow Left/Right | Jump it to the next word |

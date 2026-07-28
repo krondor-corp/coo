@@ -21,8 +21,13 @@ vi.mock("@tauri-apps/plugin-fs", () => ({
 }));
 
 /** Mod shortcuts dispatched with both modifiers set so the test doesn't depend on isMac() detection. */
-function modKeyDown(key: string) {
-  fireEvent.keyDown(window, { key, metaKey: true, ctrlKey: true });
+function modKeyDown(key: string, extra: { shiftKey?: boolean } = {}) {
+  fireEvent.keyDown(window, {
+    key,
+    metaKey: true,
+    ctrlKey: true,
+    ...extra,
+  });
 }
 
 function setCaret(textarea: HTMLTextAreaElement, position: number) {
@@ -548,6 +553,127 @@ describe("chord token arrow-key navigation", () => {
 
     await waitFor(() => {
       expect(document.activeElement).toBe(lyricLines()[1]);
+    });
+  });
+});
+
+/** Adds a {define: ...} chord-diagram line via the "/" menu and returns its chip. */
+async function addChordDefinition(name: string) {
+  const line = lyricLines()[0];
+  line.focus();
+  fireEvent.keyDown(line, { key: "/" });
+  const paletteInput = await screen.findByLabelText("Command palette");
+  fireEvent.change(paletteInput, { target: { value: "Chord diagram" } });
+  fireEvent.keyDown(paletteInput, { key: "Enter" });
+  const nameInput = await screen.findByLabelText("Chord name");
+  fireEvent.change(nameInput, { target: { value: name } });
+  fireEvent.keyDown(nameInput, { key: "Enter" });
+  return screen.findByLabelText(`Chord definition for ${name}`);
+}
+
+describe("deleting things", () => {
+  it("deletes a chord with Backspace after clicking it (click selects, it doesn't rename)", async () => {
+    render(<App />);
+    const chord = screen.getByRole("button", { name: "C" });
+    fireEvent.click(chord);
+    // Clicking must not drop into the rename input, or Backspace would edit the
+    // chord's name and there'd be no way to delete a chord with the mouse.
+    expect(screen.queryByLabelText("Rename chord C")).toBeNull();
+
+    fireEvent.keyDown(chord, { key: "Backspace" });
+    await waitFor(() => {
+      expect(screen.queryByRole("button", { name: "C" })).toBeNull();
+      expect(screen.queryByLabelText("Rename chord C")).toBeNull();
+    });
+  });
+
+  it("still opens the rename input on double-click", async () => {
+    render(<App />);
+    fireEvent.doubleClick(screen.getByRole("button", { name: "C" }));
+    expect(await screen.findByLabelText("Rename chord C")).not.toBeNull();
+  });
+
+  it("deletes a chord definition with Backspace on its chip", async () => {
+    render(<App />);
+    await addChordDefinition("Bm");
+    const chip = await screen.findByLabelText("Chord definition for Bm");
+    chip.focus();
+    fireEvent.keyDown(chip, { key: "Backspace" });
+    await waitFor(() => {
+      expect(screen.queryByLabelText("Chord definition for Bm")).toBeNull();
+    });
+  });
+
+  it("deletes a chord definition from the popover's Delete button", async () => {
+    render(<App />);
+    await addChordDefinition("Bm");
+    fireEvent.click(await screen.findByLabelText("Chord definition for Bm"));
+    fireEvent.click(
+      await screen.findByLabelText("Delete chord definition for Bm"),
+    );
+    await waitFor(() => {
+      expect(screen.queryByLabelText("Chord definition for Bm")).toBeNull();
+    });
+  });
+});
+
+describe("undo and redo", () => {
+  it("undoes an inserted chord and redoes it", async () => {
+    render(<App />);
+    fireEvent.change(lyricLines()[0], { target: { value: "hello" } });
+    await insertChordAt(lyricLines()[0], 0, "Am");
+    expect(screen.queryByRole("button", { name: "Am" })).not.toBeNull();
+
+    modKeyDown("z");
+    await waitFor(() => {
+      expect(screen.queryByRole("button", { name: "Am" })).toBeNull();
+    });
+
+    modKeyDown("z", { shiftKey: true });
+    await waitFor(() => {
+      expect(screen.queryByRole("button", { name: "Am" })).not.toBeNull();
+    });
+  });
+
+  it("undoes a deleted chord, bringing it back", async () => {
+    render(<App />);
+    const chord = screen.getByRole("button", { name: "C" });
+    chord.focus();
+    fireEvent.keyDown(chord, { key: "Backspace" });
+    await waitFor(() => {
+      expect(screen.queryByRole("button", { name: "C" })).toBeNull();
+    });
+
+    modKeyDown("z");
+    await waitFor(() => {
+      expect(screen.queryByRole("button", { name: "C" })).not.toBeNull();
+    });
+  });
+
+  it("collapses a burst of typing into a single undo step", async () => {
+    render(<App />);
+    const line = lyricLines()[0];
+    // Successive keystrokes within the coalesce window are one edit, so undo
+    // doesn't walk back a letter at a time.
+    fireEvent.change(line, { target: { value: "a" } });
+    fireEvent.change(lyricLines()[0], { target: { value: "ab" } });
+    fireEvent.change(lyricLines()[0], { target: { value: "abc" } });
+    expect(lyricLines()[0].value).toBe("abc");
+
+    modKeyDown("z");
+    await waitFor(() => {
+      expect(lyricLines()[0].value).not.toBe("abc");
+      expect(lyricLines()[0].value).not.toBe("ab");
+    });
+  });
+
+  it("does nothing when there's nothing left to undo", async () => {
+    render(<App />);
+    const before = lyricLines()[0].value;
+    modKeyDown("z");
+    modKeyDown("z");
+    await waitFor(() => {
+      expect(lyricLines()[0].value).toBe(before);
     });
   });
 });
