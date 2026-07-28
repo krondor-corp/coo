@@ -1,5 +1,4 @@
 import commandsRaw from "../../../docs/commands.md?raw";
-import developmentRaw from "../../../docs/development.md?raw";
 import faqRaw from "../../../docs/faq.md?raw";
 import fileFormatRaw from "../../../docs/file-format.md?raw";
 import installRaw from "../../../docs/install.md?raw";
@@ -33,16 +32,10 @@ const fileFormat: DocPage = {
   raw: fileFormatRaw,
 };
 const faq: DocPage = { slug: "faq", title: "FAQ", raw: faqRaw };
-const development: DocPage = {
-  slug: "development",
-  title: "Development",
-  raw: developmentRaw,
-};
 
 export const DOC_GROUPS: DocGroup[] = [
   { title: "Getting Started", pages: [install, quickstart, commands] },
   { title: "Reference", pages: [fileFormat, faq] },
-  { title: "Contributing", pages: [development] },
 ];
 
 export const DOC_PAGES: DocPage[] = DOC_GROUPS.flatMap((group) => group.pages);

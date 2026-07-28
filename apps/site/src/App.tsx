@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { DocsPage } from "./DocsPage";
 import { Header } from "./Header";
 import { useHashRoute } from "./routing";
@@ -6,20 +6,6 @@ import { useHashRoute } from "./routing";
 const REPO = "krondor-corp/coo";
 const INSTALL_COMMAND =
   "curl -fsSL https://raw.githubusercontent.com/krondor-corp/coo/main/install.sh | bash";
-
-type ReleaseAsset = {
-  name: string;
-  browser_download_url: string;
-};
-
-type Release = {
-  tag_name: string;
-  assets: ReleaseAsset[];
-};
-
-function platformAsset(assets: ReleaseAsset[], match: RegExp) {
-  return assets.find((asset) => match.test(asset.name));
-}
 
 function InstallCommand() {
   const [copied, setCopied] = useState(false);
@@ -42,26 +28,6 @@ function InstallCommand() {
 }
 
 function HomePage() {
-  const [release, setRelease] = useState<Release | null>(null);
-
-  useEffect(() => {
-    fetch(`https://api.github.com/repos/${REPO}/releases/latest`)
-      .then((response) => (response.ok ? response.json() : null))
-      .then((data) => setRelease(data))
-      .catch(() => setRelease(null));
-  }, []);
-
-  const macAsset = release && platformAsset(release.assets, /\.dmg$/);
-  const windowsAsset =
-    release &&
-    (platformAsset(release.assets, /\.msi$/) ??
-      platformAsset(release.assets, /setup\.exe$/));
-  const linuxAsset =
-    release &&
-    (platformAsset(release.assets, /\.deb$/) ??
-      platformAsset(release.assets, /\.AppImage$/));
-  const hasDirectDownloads = macAsset || windowsAsset || linuxAsset;
-
   return (
     <main className="page">
       <header className="hero">
@@ -71,10 +37,13 @@ function HomePage() {
           Write lyrics naturally. Insert, rename, and move chords without typing
           a single bracket.
         </p>
+        <InstallCommand />
+        <p className="download-note">
+          Detects your OS/arch and installs the latest release. macOS and Linux
+          — see <a href="#/docs/install">the install docs</a> for Windows and
+          manual downloads.
+        </p>
         <div className="hero-links">
-          <a href="#download" className="hero-cta">
-            Get started
-          </a>
           <a href="#/docs" className="hero-link">
             Read the docs
           </a>
@@ -103,58 +72,6 @@ function HomePage() {
             raw source mode any time.
           </p>
         </div>
-      </section>
-
-      <section id="download" className="download">
-        <h2>Install</h2>
-        <InstallCommand />
-        <p className="download-note">
-          Detects your OS/arch and installs the latest release. macOS and Linux
-          — see <a href="#/docs/install">the install docs</a> for Windows and
-          manual downloads.
-        </p>
-
-        {hasDirectDownloads && (
-          <details className="download-manual">
-            <summary>Or download directly</summary>
-            <div className="download-grid">
-              {macAsset && (
-                <a
-                  className="download-card"
-                  href={macAsset.browser_download_url}
-                >
-                  <span className="download-platform">macOS</span>
-                  <span className="download-file">{macAsset.name}</span>
-                </a>
-              )}
-              {windowsAsset && (
-                <a
-                  className="download-card"
-                  href={windowsAsset.browser_download_url}
-                >
-                  <span className="download-platform">Windows</span>
-                  <span className="download-file">{windowsAsset.name}</span>
-                </a>
-              )}
-              {linuxAsset && (
-                <a
-                  className="download-card"
-                  href={linuxAsset.browser_download_url}
-                >
-                  <span className="download-platform">Linux</span>
-                  <span className="download-file">{linuxAsset.name}</span>
-                </a>
-              )}
-            </div>
-            {macAsset && (
-              <p className="download-note">
-                macOS will warn that Coo is from an unidentified developer — it
-                isn't signed or notarized yet. See{" "}
-                <a href="#/docs/install">the install docs</a> to open it anyway.
-              </p>
-            )}
-          </details>
-        )}
       </section>
 
       <footer className="footer">

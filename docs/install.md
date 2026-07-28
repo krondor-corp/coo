@@ -56,4 +56,4 @@ On Windows, uninstall it the normal way (Settings → Apps).
 
 ## building from source
 
-See [development.md](./development.md).
+See [development.md](https://github.com/krondor-corp/coo/blob/main/docs/development.md).
