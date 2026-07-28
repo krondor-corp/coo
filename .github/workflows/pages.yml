@@ -34,14 +34,14 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - name: Setup Pages
-        id: pages
         uses: actions/configure-pages@v4
 
       - name: Build site
         working-directory: apps/site
+        # coo.krondor.org is a custom domain served at the root, not the default
+        # username.github.io/coo project-page path — configure-pages' base_path
+        # output assumes the latter, so it must not be used here.
         run: pnpm build
-        env:
-          SITE_BASE_PATH: ${{ steps.pages.outputs.base_path }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
