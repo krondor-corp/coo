@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/krondor-corp/coo/compare/coo-v0.3.0...coo-v0.3.1) (2026-07-28)
+
+
+### Bug Fixes
+
+* **desktop:** add undo/redo, and make chords deletable by mouse ([2efeef8](https://github.com/krondor-corp/coo/commit/2efeef8ae00a81b43d894d39f1b4ef239d4fec48))
+
 ## [0.3.0](https://github.com/krondor-corp/coo/compare/coo-v0.2.0...coo-v0.3.0) (2026-07-28)
 
 
