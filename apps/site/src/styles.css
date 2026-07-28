@@ -21,17 +21,61 @@ a {
   color: inherit;
 }
 
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px 24px;
+}
+
+.site-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  font-family: var(--mono);
+  font-size: 15px;
+  letter-spacing: 0.02em;
+}
+
+.site-title .logomark {
+  width: 20px;
+  height: 20px;
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 14px;
+}
+
+.site-nav a {
+  text-decoration: none;
+  color: var(--text-muted);
+}
+
+.site-nav a:hover {
+  color: var(--text);
+}
+
 .page {
   max-width: 720px;
   margin: 0 auto;
-  padding: 80px 24px 60px;
+  padding: 24px 24px 60px;
+}
+
+.page-docs {
+  max-width: 960px;
 }
 
 .hero {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding-bottom: 56px;
+  padding: 56px 0;
   border-bottom: 1px solid var(--border);
   margin-bottom: 56px;
 }
@@ -158,6 +202,202 @@ a {
   margin-top: 16px;
   font-size: 13px;
   color: var(--text-muted);
+}
+
+.install-command {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #1a1a1a;
+  border-radius: 8px;
+  padding: 14px 16px;
+  overflow-x: auto;
+}
+
+.install-command code {
+  font-family: var(--mono);
+  font-size: 14px;
+  color: #f4f1ea;
+  white-space: pre;
+}
+
+.download-manual {
+  margin-top: 20px;
+}
+
+.download-manual summary {
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.download-manual .download-grid {
+  margin-top: 12px;
+}
+
+/* copy button, shared by the install command and rendered doc code blocks */
+.copy-btn {
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 3px 8px;
+  cursor: pointer;
+}
+
+.copy-btn:hover {
+  color: var(--text);
+  border-color: var(--text);
+}
+
+.doc-content pre .copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+/* Docs layout: sidebar + content */
+
+.docs-layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 48px;
+  padding: 40px 0 60px;
+}
+
+.sidebar-group + .sidebar-group {
+  margin-top: 24px;
+}
+
+.sidebar-heading {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin: 0 0 8px;
+}
+
+.sidebar-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sidebar-item a {
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.sidebar-item a:hover {
+  color: var(--text);
+}
+
+.sidebar-item.active a {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.doc-content {
+  min-width: 0;
+  max-width: 680px;
+}
+
+.doc-content h1,
+.doc-content h2,
+.doc-content h3 {
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.doc-content h1 {
+  font-size: 32px;
+  margin: 0 0 24px;
+}
+
+.doc-content h2 {
+  font-size: 22px;
+  margin: 40px 0 12px;
+}
+
+.doc-content h3 {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 28px 0 10px;
+}
+
+.doc-content p,
+.doc-content li {
+  color: var(--text-muted);
+  font-size: 15px;
+}
+
+.doc-content strong {
+  color: var(--text);
+}
+
+.doc-content a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.doc-content code {
+  font-family: var(--mono);
+  font-size: 0.9em;
+  background: var(--accent-weak);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+}
+
+.doc-content pre {
+  position: relative;
+  background: #1a1a1a;
+  border-radius: 8px;
+  padding: 16px;
+  overflow-x: auto;
+}
+
+.doc-content pre code {
+  background: none;
+  padding: 0;
+  color: #f4f1ea;
+}
+
+.doc-content table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  margin: 16px 0;
+}
+
+.doc-content th,
+.doc-content td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.doc-content th {
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 720px) {
+  .docs-layout {
+    grid-template-columns: 1fr;
+  }
 }
 
 .footer {

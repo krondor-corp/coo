@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
+import { DocsPage } from "./DocsPage";
+import { Header } from "./Header";
+import { useHashRoute } from "./routing";
 
 const REPO = "krondor-corp/coo";
+const INSTALL_COMMAND =
+  "curl -fsSL https://raw.githubusercontent.com/krondor-corp/coo/main/install.sh | bash";
 
 type ReleaseAsset = {
   name: string;
@@ -16,25 +21,27 @@ function platformAsset(assets: ReleaseAsset[], match: RegExp) {
   return assets.find((asset) => match.test(asset.name));
 }
 
-function Logomark() {
+function InstallCommand() {
+  const [copied, setCopied] = useState(false);
+
+  function copy() {
+    navigator.clipboard.writeText(INSTALL_COMMAND).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
+  }
+
   return (
-    <svg viewBox="0 0 32 32" className="logomark" aria-hidden="true">
-      <g stroke="currentColor" strokeWidth={1.5} strokeLinecap="round">
-        <line x1="6" y1="5" x2="6" y2="27" />
-        <line x1="13" y1="5" x2="13" y2="27" />
-        <line x1="20" y1="5" x2="20" y2="27" />
-        <line x1="27" y1="5" x2="27" y2="27" />
-        <line x1="6" y1="9" x2="27" y2="9" strokeWidth={2.5} />
-        <line x1="6" y1="16" x2="27" y2="16" strokeWidth={1} />
-        <line x1="6" y1="23" x2="27" y2="23" strokeWidth={1} />
-      </g>
-      <circle cx="13" cy="16" r="2.25" fill="currentColor" />
-      <circle cx="27" cy="23" r="2.25" fill="currentColor" />
-    </svg>
+    <div className="install-command">
+      <code>{INSTALL_COMMAND}</code>
+      <button type="button" className="copy-btn" onClick={copy}>
+        {copied ? "copied" : "copy"}
+      </button>
+    </div>
   );
 }
 
-export function App() {
+function HomePage() {
   const [release, setRelease] = useState<Release | null>(null);
 
   useEffect(() => {
@@ -53,11 +60,11 @@ export function App() {
     release &&
     (platformAsset(release.assets, /\.deb$/) ??
       platformAsset(release.assets, /\.AppImage$/));
+  const hasDirectDownloads = macAsset || windowsAsset || linuxAsset;
 
   return (
     <main className="page">
       <header className="hero">
-        <Logomark />
         <span className="hero-eyebrow">A command-based ChordPro editor</span>
         <h1 className="hero-title">Coo</h1>
         <p className="hero-tagline">
@@ -66,15 +73,10 @@ export function App() {
         </p>
         <div className="hero-links">
           <a href="#download" className="hero-cta">
-            Download
+            Get started
           </a>
-          <a
-            href={`https://github.com/${REPO}`}
-            className="hero-link"
-            target="_blank"
-            rel="noreferrer"
-          >
-            View on GitHub
+          <a href="#/docs" className="hero-link">
+            Read the docs
           </a>
         </div>
       </header>
@@ -104,57 +106,54 @@ export function App() {
       </section>
 
       <section id="download" className="download">
-        <h2>Download</h2>
-        {release ? (
-          <div className="download-grid">
+        <h2>Install</h2>
+        <InstallCommand />
+        <p className="download-note">
+          Detects your OS/arch and installs the latest release. macOS and Linux
+          — see <a href="#/docs/install">the install docs</a> for Windows and
+          manual downloads.
+        </p>
+
+        {hasDirectDownloads && (
+          <details className="download-manual">
+            <summary>Or download directly</summary>
+            <div className="download-grid">
+              {macAsset && (
+                <a
+                  className="download-card"
+                  href={macAsset.browser_download_url}
+                >
+                  <span className="download-platform">macOS</span>
+                  <span className="download-file">{macAsset.name}</span>
+                </a>
+              )}
+              {windowsAsset && (
+                <a
+                  className="download-card"
+                  href={windowsAsset.browser_download_url}
+                >
+                  <span className="download-platform">Windows</span>
+                  <span className="download-file">{windowsAsset.name}</span>
+                </a>
+              )}
+              {linuxAsset && (
+                <a
+                  className="download-card"
+                  href={linuxAsset.browser_download_url}
+                >
+                  <span className="download-platform">Linux</span>
+                  <span className="download-file">{linuxAsset.name}</span>
+                </a>
+              )}
+            </div>
             {macAsset && (
-              <a className="download-card" href={macAsset.browser_download_url}>
-                <span className="download-platform">macOS</span>
-                <span className="download-file">{macAsset.name}</span>
-              </a>
+              <p className="download-note">
+                macOS will warn that Coo is from an unidentified developer — it
+                isn't signed or notarized yet. See{" "}
+                <a href="#/docs/install">the install docs</a> to open it anyway.
+              </p>
             )}
-            {windowsAsset && (
-              <a
-                className="download-card"
-                href={windowsAsset.browser_download_url}
-              >
-                <span className="download-platform">Windows</span>
-                <span className="download-file">{windowsAsset.name}</span>
-              </a>
-            )}
-            {linuxAsset && (
-              <a
-                className="download-card"
-                href={linuxAsset.browser_download_url}
-              >
-                <span className="download-platform">Linux</span>
-                <span className="download-file">{linuxAsset.name}</span>
-              </a>
-            )}
-          </div>
-        ) : (
-          <p className="download-empty">
-            No release published yet — check back soon, or{" "}
-            <a href={`https://github.com/${REPO}/releases`}>
-              browse all releases
-            </a>
-            .
-          </p>
-        )}
-        {macAsset && (
-          <p className="download-note">
-            macOS will warn that Coo is from an unidentified developer — it
-            isn't signed or notarized yet. Right-click the app and choose Open,
-            or see{" "}
-            <a
-              href={`https://github.com/${REPO}/blob/main/docs/install.md`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              the install guide
-            </a>
-            .
-          </p>
+          </details>
         )}
       </section>
 
@@ -163,5 +162,22 @@ export function App() {
         <a href={`https://github.com/${REPO}`}>GitHub</a>
       </footer>
     </main>
+  );
+}
+
+export function App() {
+  const route = useHashRoute();
+
+  return (
+    <>
+      <Header />
+      {route.page === "docs" ? (
+        <main className="page page-docs">
+          <DocsPage slug={route.slug} anchor={route.anchor} />
+        </main>
+      ) : (
+        <HomePage />
+      )}
+    </>
   );
 }
