@@ -31,45 +31,45 @@ function HomePage() {
   return (
     <main className="page">
       <header className="hero">
-        <span className="hero-eyebrow">A command-based ChordPro editor</span>
+        <span className="hero-eyebrow">A chord-chart editor for musicians</span>
         <h1 className="hero-title">Coo</h1>
         <p className="hero-tagline">
-          Write lyrics naturally. Insert, rename, and move chords without typing
-          a single bracket.
+          Type your lyrics. Drop chords right where you sing them. Transpose the
+          whole song to fit your voice.
         </p>
         <InstallCommand />
         <p className="download-note">
-          Detects your OS/arch and installs the latest release. macOS and Linux
-          — see <a href="#/docs/install">the install docs</a> for Windows and
-          manual downloads.
+          Copy that, paste it into Terminal, press Enter. It picks the right
+          version for your Mac or Linux machine. On Windows, or want to download
+          it yourself? <a href="#/docs/install">Start here</a>.
         </p>
         <div className="hero-links">
           <a href="#/docs" className="hero-link">
-            Read the docs
+            Read the guide
           </a>
         </div>
       </header>
 
       <section className="features">
         <div className="feature">
-          <h3>Write, don't format</h3>
+          <h3>Chords land where you sing them</h3>
           <p>
-            Type lyrics like a plain text editor. Chords sit above the words
-            they belong to, positioned automatically.
+            Put the cursor on the syllable, hit "/", name the chord. It sits
+            right above the word. No brackets, no counting spaces.
           </p>
         </div>
         <div className="feature">
-          <h3>Commands, not syntax</h3>
+          <h3>Transpose to fit a voice</h3>
           <p>
-            A "/" menu inserts chords, section headings, and comments — no
-            ChordPro syntax to memorize.
+            Shift the whole song up or down a step on screen. Your file keeps
+            the key you actually wrote it in.
           </p>
         </div>
         <div className="feature">
-          <h3>Raw source, always</h3>
+          <h3>Your songs stay yours</h3>
           <p>
-            Every document is still a plain .chopro file underneath. Drop into
-            raw source mode any time.
+            Every song is a plain file on your own computer. No account, no
+            cloud, and it opens in any other chord-chart app you like.
           </p>
         </div>
       </section>

@@ -1,59 +1,59 @@
 # Install
 
-## macOS / Linux
+## Mac and Linux
+
+Open Terminal, paste this in, and press Enter:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/krondor-corp/coo/main/install.sh | bash
 ```
 
-This detects your OS/arch, downloads the latest `coo-v*` release, and installs it:
+That works out which version your computer needs, downloads the latest one, and puts it in place — on a Mac, straight into your Applications folder. Then open Coo the way you'd open anything else.
 
-- **macOS** — mounts the `.dmg` and copies `Coo.app` into `/Applications` (override with `INSTALL_DIR`)
-- **Linux** — downloads the `.deb` and installs it with `sudo dpkg -i` (amd64 only today; other distros can grab the `.AppImage` manually)
+### Your Mac says "Apple could not verify this app is free of malware"
 
-### macOS: "Apple could not verify this app is free of malware"
+Expected, and not a sign of a bad download. Coo hasn't been through Apple's paid signing process yet, so the first time you open it your Mac wants you to confirm you meant to. Do any one of these, once:
 
-Coo isn't signed with an Apple Developer ID or notarized yet, so Gatekeeper blocks it the first time you open it — whether you installed via the script or downloaded the `.dmg` from a browser (browser downloads get tagged with a quarantine flag that Terminal-driven installs don't). This is expected, not a broken build. Pick one:
-
-- **Right-click (Control-click) `Coo.app` → Open**, then confirm "Open" in the dialog that appears.
-- If macOS doesn't offer that option: **System Settings → Privacy & Security**, scroll to the bottom, and click **"Open Anyway"** next to the Coo warning. Then open the app again.
-- From Terminal:
+- **Right-click (or Control-click) Coo in your Applications folder and choose Open**, then click **Open** in the box that appears.
+- If that option isn't there: open **System Settings → Privacy & Security**, scroll to the bottom, and click **Open Anyway** next to the message about Coo. Then open Coo again.
+- Or, in Terminal:
   ```bash
   xattr -cr /Applications/Coo.app
   ```
 
-You only need to do this once per install. `install.sh` clears the quarantine flag for you, so this mostly matters if you downloaded the `.dmg` directly.
+Once you've done it, it won't ask again. It mostly comes up when you've downloaded the `.dmg` in a browser rather than using the command above.
 
 ## Windows
 
-There's no installer script for Windows — download the `.msi` or the NSIS `-setup.exe` directly from [the latest release](https://github.com/krondor-corp/coo/releases/latest) and run it.
+Download the `.msi` or the `-setup.exe` from [the latest release](https://github.com/krondor-corp/coo/releases/latest) and run it.
 
-## manually, any platform
+## Downloading it yourself, any computer
 
-Grab the file for your platform from [the releases page](https://github.com/krondor-corp/coo/releases/latest):
+Grab the file for your machine from [the releases page](https://github.com/krondor-corp/coo/releases/latest):
 
-| Platform | File |
+| Your computer | The file |
 | --- | --- |
-| macOS Apple Silicon | `Coo_<version>_aarch64.dmg` |
-| macOS Intel | `Coo_<version>_x64.dmg` |
+| Mac, Apple silicon (M1 and later) | `Coo_<version>_aarch64.dmg` |
+| Mac, Intel | `Coo_<version>_x64.dmg` |
 | Windows | `Coo_<version>_x64-setup.exe` or `Coo_<version>_x64_en-US.msi` |
 | Linux | `Coo_<version>_amd64.deb` or `Coo_<version>_amd64.AppImage` |
 
-Every release also publishes a `SHA256SUMS` file if you want to verify a download.
+Not sure which Mac you have? Apple menu → About This Mac.
+
+Every release also includes a `SHA256SUMS` file, if you like to check your downloads.
 
 ## updating
 
-Coo doesn't self-update yet. Re-run the install script, or download the newer release manually — either overwrites the previous install.
+Coo doesn't update itself yet. Run the command above again, or download the newer version — either one replaces what you already have.
 
-## uninstall
+## uninstalling
+
+On a Mac, drag Coo from your Applications folder to the Trash. On Windows, uninstall it the usual way through Settings → Apps. On Linux, if you installed the `.deb`:
 
 ```bash
-rm -rf /Applications/Coo.app          # macOS
-sudo dpkg -r coo                      # Linux, if installed via .deb
+sudo dpkg -r coo
 ```
 
-On Windows, uninstall it the normal way (Settings → Apps).
+## building it yourself
 
-## building from source
-
-See [development.md](https://github.com/krondor-corp/coo/blob/main/docs/development.md).
+Coo is open source. If you want to build from the source code, see [development.md](https://github.com/krondor-corp/coo/blob/main/docs/development.md).

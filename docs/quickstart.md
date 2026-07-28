@@ -1,14 +1,14 @@
 # Quickstart
 
-Coo opens with a starter document already in place — a title, a key, a tempo, and one lyric line with a chord on it. Everything below works from there.
+Coo opens with a starter song already in place — a title, a key, a tempo, and one line of lyrics with a chord on it. Everything below works from there.
 
 ## write lyrics
 
-Click (or tab into) a lyric line and type. Press **Enter** to start a new line, **Backspace** at the start of a line to merge it into the one above.
+Click a lyric line and type. Press **Enter** to start a new line, **Backspace** at the start of a line to join it to the one above.
 
-## insert a chord
+## add a chord
 
-Place your cursor where the chord should sit and press **`/`**. Pick **Insert chord**, type a name (`Am`, `Fmaj7`, `G/B` — anything), and press Enter. No `[` or `]` involved.
+Put your cursor where the chord should sit and press **`/`**. Choose **Insert chord**, type a name (`Am`, `Fmaj7`, `G/B` — anything), and press Enter. No brackets involved.
 
 ```
 /  → Insert chord → "Am" → Enter
@@ -16,38 +16,38 @@ Place your cursor where the chord should sit and press **`/`**. Pick **Insert ch
 
 ## move a chord
 
-Click a chord (or jump to it with `⌘]` / `⌘[`) to focus it, then:
+Click a chord to select it (or jump between chords with `⌘]` / `⌘[`), then:
 
-- **Arrow keys** — nudge it one character
-- **Shift+Arrow** — jump to the next word boundary
+- **Arrow keys** — nudge it one letter left or right
+- **Shift+Arrow** — jump to the next word
 - **Backspace/Delete** — remove it
-- **Type anything** — renames it in place
-- **Escape** — back to the lyric at that position
+- **Type anything** — rename it on the spot
+- **Escape** — go back to the lyrics
 
-## add a heading, comment, or chord diagram
+## add a section, note, or chord diagram
 
 Same `/` menu:
 
 ```
-/  → Insert chorus heading      (clones the first chorus if one exists)
-/  → Insert comment
-/  → Define chord…              (fretboard diagram, editable)
+/  → Insert chorus heading      (copies your first chorus, if you have one)
+/  → Insert comment             (a note to yourself or the band)
+/  → Define chord…              (a fretboard diagram you can draw)
 ```
 
-## edit song metadata
+## fill in the song details
 
-`⌘M` focuses the title. Key, tempo, and tuning live in the caption line beneath it; anything else (capo, track, arbitrary fields) is a removable chip — type `field: value` in the "add a field" box to create one.
+`⌘M` jumps to the title. Key, tempo, and tuning sit on the line beneath it. Anything else you want to note — capo, tuning notes, who to credit, whatever you like — type `name: value` in the "add a field" box and it becomes a tag you can remove later.
 
-## transpose without touching the file
+## transpose to fit a voice
 
-The `−`/`+` buttons next to the key shift every chord shown in the editor and display where you've landed (`→ D`), but nothing is written to the document or the saved file until you edit a chord directly. This is a view, not an edit — see [file-format.md](./file-format.md#transpose) for why.
+The `−`/`+` buttons next to the key shift every chord on screen and show where you've landed (`→ D`). This only changes what you're looking at. Your file keeps the chords and the key you actually wrote — so transposing on the fly for a singer never rewrites the song. See [the file format](./file-format.md#transpose).
 
 ## save
 
-`⌘S` saves in place, `⌘⇧S` always prompts for a location. `⌘N`/`⌘O` for New/Open.
+`⌘S` saves, `⌘⇧S` saves a copy somewhere new. `⌘N` starts a new song, `⌘O` opens an existing one.
 
-## when something doesn't parse
+## if a song won't open
 
-Malformed frontmatter (a missing title, a non-numeric tempo) drops you into raw source automatically with the parser's error on screen. Fix the text and Coo returns to the structured view once it parses again. You can also switch to raw mode any time with `⌘E`.
+If the details at the top of the file are off — no title, or a tempo that isn't a number — Coo tells you what's wrong and switches to the plain-text view so you can fix it yourself. It checks as you type and slips back to the normal view the moment the song makes sense again. You can switch to plain text any time with `⌘E`.
 
-See [commands.md](./commands.md) for the full shortcut reference, or press `⌘K` in the app.
+See [the full list of shortcuts](./commands.md), or press `⌘K` in the app.

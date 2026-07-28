@@ -1,29 +1,31 @@
 # FAQ
 
-## How do I open or save a file?
+## How do I open or save a song?
 
-`⌘O` opens, `⌘N` starts a new document, `⌘S` saves in place, `⌘⇧S` always prompts for a location — same as the toolbar buttons. Files are plain `.chopro` text; there's no import/export step.
+`⌘O` opens, `⌘N` starts a new one, `⌘S` saves, `⌘⇧S` saves a copy somewhere new — same as the buttons at the top of the window. Songs are ordinary text files, so there's no importing or exporting to think about.
 
-## What metadata does Coo support?
+## What song details can I save?
 
-Five dedicated fields with their own UI: `title`, `author`, `key`, `tempo`, `tuning`. Everything else — `capo`, `track`, or any name you make up — is a removable chip, addable by typing `field: value` in the "add a field" box. There's no fixed schema underneath; frontmatter is a plain `key: value` map, so Coo never discards a field it doesn't specifically know about. See [file-format.md](./file-format.md#frontmatter).
+Five have their own spot in the editor: **title**, **author**, **key**, **tempo**, and **tuning**.
 
-## Can I use these files in another editor?
+Anything else — capo, what album it's from, who to credit, a note about the arrangement — you add yourself by typing `name: value` in the "add a field" box. It becomes a tag you can remove later. Coo never throws away a detail just because it doesn't recognise the name, including ones added by whatever app you used before.
 
-Yes. Coo reads and writes ordinary ChordPro — no proprietary format, no lossy round-trip. A file saved from Coo opens in any ChordPro-compatible tool, and a file from any other ChordPro tool opens in Coo. Directives Coo doesn't have a specific command for (anything beyond headings, comments, and chord definitions) are preserved verbatim rather than dropped. See [file-format.md](./file-format.md).
+## Can I use these files in another app?
 
-## Why does macOS say Coo is from an unidentified developer?
+Yes. Coo reads and writes ordinary ChordPro, the same format lots of other chord-chart apps use. A song saved from Coo opens elsewhere, and a song from another app opens in Coo. Nothing gets mangled on the way through, and anything Coo doesn't have a button for is carried across untouched rather than dropped.
 
-It isn't signed with an Apple Developer ID or notarized yet — that's expected, not a broken build. See [install.md](./install.md#macos-apple-could-not-verify-this-app-is-free-of-malware) for the one-time bypass.
+## Why does my Mac say Coo is from an unidentified developer?
 
-## Does transposing change my file?
+Because it hasn't been through Apple's paid signing process yet. It's an expected warning, not a sign of a broken download. [Here's how to open it anyway](./install.md#your-mac-says-apple-could-not-verify-this-app-is-free-of-malware) — you only do it once.
 
-No. The `−`/`+` transpose buttons only change what's displayed — the document and the saved file keep the original chords and the `key:` field you wrote. See [file-format.md](./file-format.md#transpose).
+## Does transposing change my song?
 
-## What happens if I open a file that doesn't parse?
+No. The `−`/`+` buttons only change what's on screen. Your file keeps the chords and the key you wrote, so you can transpose on the fly at rehearsal without touching the song itself. See [the file format](./file-format.md#transpose).
 
-Coo shows the parser's error (missing title, non-numeric tempo, etc.) and drops into raw source so you can fix the text directly. It re-parses on every keystroke and returns to the structured view the moment the file is valid — nothing is lost in between.
+## What if a song won't open?
 
-## Is there a mobile version?
+Coo tells you what's wrong — a missing title, a tempo that isn't a number — and switches to the plain-text view so you can fix it directly. It rechecks as you type and returns to the normal view as soon as the song makes sense again. Nothing is lost in between.
 
-No. Coo is a desktop app (Tauri) for macOS, Windows, and Linux.
+## Is there a phone or tablet version?
+
+Not yet. Coo runs on Mac, Windows, and Linux computers.

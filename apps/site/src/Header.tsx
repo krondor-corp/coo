@@ -24,7 +24,7 @@ export function Header() {
         <span className="site-title-text">Coo</span>
       </a>
       <nav className="site-nav">
-        <a href="#/docs">Docs &rarr;</a>
+        <a href="#/docs">Guide &rarr;</a>
       </nav>
     </header>
   );

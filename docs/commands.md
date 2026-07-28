@@ -1,58 +1,58 @@
-# Commands
+# Shortcuts
 
-`⌘` is Cmd on macOS, `Ctrl` on Windows/Linux — Coo accepts either modifier everywhere regardless of platform detection, so both work on any system. In-app, every shortcut is shown with the real key for your machine (press `⌘K`/`Ctrl+K` for the reference).
+`⌘` means Cmd on a Mac and Ctrl on Windows or Linux. Coo accepts either key on any computer, and in the app every shortcut is shown with the right one for your machine — press `⌘K` to see them all.
 
-## Writing
+## Writing lyrics
 
-| Shortcut | Action |
+| Shortcut | What it does |
 | --- | --- |
-| `/` (while writing lyrics) | Open the insert menu |
-| Enter | Split the line at the caret |
-| Backspace at column 0 | Merge into the line above |
-| Arrow Up/Down | Move to the line above/below, same column |
-| Arrow Left/Right at a line boundary | Move into the adjacent line |
+| `/` | Open the insert menu |
+| Enter | Start a new line |
+| Backspace at the start of a line | Join it to the line above |
+| Arrow Up/Down | Move to the line above or below |
+| Arrow Left/Right at the end of a line | Move into the next line along |
 
-## The insert menu (`/`)
+## The `/` menu
 
-| Action | Result |
+| Choose | And you get |
 | --- | --- |
-| Insert chord | Chord at the caret — type a name, Enter |
-| Insert verse heading | `{start_of_verse}` / `{end_of_verse}`, always blank |
-| Insert chorus heading | Clones the first existing chorus, if any, instead of starting blank |
-| Insert bridge heading | Same cloning behavior as chorus |
-| Insert comment | `{comment: ...}`, editable inline |
-| Define chord… | `{define: ...}` fretboard diagram, editable |
+| Insert chord | A chord wherever your cursor is — type a name, press Enter |
+| Insert verse heading | A fresh, empty verse |
+| Insert chorus heading | A copy of your first chorus, if you already have one |
+| Insert bridge heading | A bridge, copied the same way as a chorus |
+| Insert comment | A note to yourself or the band |
+| Define chord… | A fretboard diagram you can draw |
 
-Arrow Up/Down move the highlight; Enter selects; typing filters the list.
+Arrow Up/Down move the highlight, Enter picks one, and typing narrows the list.
 
 ## Chords
 
-| Shortcut | Action |
+| Shortcut | What it does |
 | --- | --- |
-| `⌘]` / `⌘[` | Jump to the next / previous chord in the document |
-| Click a chord, or arrive via the above | Focus it |
-| Type anything while focused | Rename it |
-| Arrow Left/Right | Nudge one character |
-| Shift+Arrow Left/Right | Jump to the next word boundary |
-| Backspace/Delete | Delete it |
-| Escape | Return focus to the lyric at that position |
+| `⌘]` / `⌘[` | Jump to the next or previous chord in the song |
+| Click a chord | Select it |
+| Type anything | Rename the selected chord |
+| Arrow Left/Right | Nudge it one letter |
+| Shift+Arrow Left/Right | Jump it to the next word |
+| Backspace/Delete | Remove it |
+| Escape | Go back to the lyrics |
 
-## Metadata
+## Song details
 
-| Shortcut | Action |
+| Shortcut | What it does |
 | --- | --- |
-| `⌘M` | Focus the title field |
-| Transpose `−`/`+` buttons | Shift the displayed chords by a semitone (view-only — see [file-format.md](./file-format.md#transpose)) |
+| `⌘M` | Jump to the title |
+| `−` / `+` next to the key | Transpose what's on screen by a semitone — your file doesn't change ([why](./file-format.md#transpose)) |
 
-Title, author, key, tempo, and tuning are dedicated fields. Everything else (capo, track, custom fields) is a chip, addable via "add a field: value…" and removable with its `×`.
+Title, author, key, tempo, and tuning have their own spots. Anything else you want to note is a tag: type `name: value` in the "add a field" box, remove it with its `×`.
 
-## File
+## Files
 
-| Shortcut | Action |
+| Shortcut | What it does |
 | --- | --- |
-| `⌘N` | New |
+| `⌘N` | New song |
 | `⌘O` | Open |
 | `⌘S` | Save |
-| `⌘⇧S` | Save As |
-| `⌘E` | Toggle raw ChordPro source |
-| `⌘K` | Toggle the keyboard help |
+| `⌘⇧S` | Save a copy |
+| `⌘E` | Show the plain text behind the song |
+| `⌘K` | Show or hide this list |

@@ -1,6 +1,6 @@
-# File format
+# The file format
 
-Coo reads and writes plain `.chopro` files — YAML-ish frontmatter, then a ChordPro body. There is no Coo-specific format; every file it produces opens in any ChordPro-compatible tool, and any ChordPro file opens in Coo.
+Coo saves ordinary `.chopro` files — the song details at the top, the song itself underneath. There's no Coo-only format. Anything Coo saves opens in other ChordPro apps, and anything they save opens in Coo.
 
 ```
 ---
@@ -16,34 +16,35 @@ custom_field: whatever you want
 {end_of_verse}
 ```
 
-## frontmatter
+## the details at the top
 
-`title`, `author`, `key`, `tempo`, and `tuning` get dedicated fields in the editor's header. Anything else in the frontmatter block — `capo`, `track`, or any name you make up — shows up as a removable chip and round-trips exactly; Coo never invents a schema for it.
+`title`, `author`, `key`, `tempo`, and `tuning` get their own spots in the editor. Anything else — capo, what album it's from, or a name you invent — shows up as a tag you can remove, and comes back out of the file exactly as it went in. Coo doesn't insist on a particular set of fields.
 
-## directives
+## sections, notes, and chord shapes
 
-Coo has first-class commands for the directives an author actually reaches for:
+Coo has buttons for the things you actually reach for while writing:
 
-- `{start_of_verse}` / `{start_of_chorus}` / `{start_of_bridge}` and their `end_of_*` pairs
-- `{comment: ...}`
-- `{define: NAME base-fret N frets ... fingers ...}`
+- verses, choruses, and bridges
+- comments — notes to yourself or the band
+- chord diagrams
 
-Any other directive — anything Coo doesn't have a specific command for — is preserved byte-for-byte and is only editable through raw source (`⌘E`). It is never dropped, reformatted, or guessed at.
+Anything else a ChordPro file can contain is kept exactly as written, and you can edit it in the plain-text view (`⌘E`). It's never dropped, rewritten, or guessed at — so a song from another app survives a trip through Coo intact.
 
-## round-trip guarantee
+## opening and saving won't change your file
 
-Opening and saving a file you didn't touch produces the identical file. This holds down to the grapheme: Coo segments lyric text with `Intl.Segmenter`, not JS string indexing, so combining marks and multi-codepoint characters (emoji, etc.) don't get split or duplicated when a chord sits next to one.
+Open a song, save it without touching anything, and you get the identical file back. That holds for accented letters and emoji too — a chord sitting next to one won't split it or duplicate it.
 
 ## transpose
 
-The `−`/`+` transpose control is a *view*, not an edit. It shifts every chord shown in the editor by a semitone and shows where you've landed next to the key (`→ D`), but:
+The `−`/`+` control is a view, not an edit. It shifts every chord on screen by a semitone and shows where you've landed next to the key (`→ D`), but:
 
-- nothing is written to the document model
-- nothing is written to the file on save
-- the `key:` field is never rewritten automatically — it's what you declared, and transposing for a specific reading doesn't mean you're changing what key the song is actually in
+- nothing is written to your file
+- the `key:` field is never rewritten
 
-If you want the transposition to be permanent, rename the chords directly (click each one, or delete and re-insert via `/`). A dedicated "commit transpose" edit mode is on the roadmap but doesn't exist yet — see [quickstart.md](./quickstart.md#transpose-without-touching-the-file).
+That's deliberate. Transposing to suit a singer at rehearsal doesn't mean the song has changed key, so Coo doesn't rewrite what you wrote.
 
-## malformed files
+If you want the new key to stick, rename the chords yourself — click each one and type, or remove and re-add them with `/`. A "make this permanent" button is planned but doesn't exist yet. See [the quickstart](./quickstart.md#transpose-to-fit-a-voice).
 
-A file with missing frontmatter, no title, or a non-numeric `tempo`/`capo` can't be parsed into the structured editor. Coo shows the parser's error and drops into raw source so you can fix it by hand; it re-parses on every keystroke and returns to the structured view the moment the file is valid again. Nothing is lost in between — raw source edits the same underlying text.
+## if a song won't open
+
+A file with no title, or a tempo that isn't a number, can't be laid out as a song. Coo tells you what's wrong and switches to the plain-text view so you can fix it by hand. It rechecks as you type and returns to the normal view the moment the file makes sense. Nothing is lost in between — the plain-text view is editing the same song.
