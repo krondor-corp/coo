@@ -34,7 +34,7 @@ function lyricLines(): HTMLTextAreaElement[] {
   return screen.getAllByLabelText("Lyric line") as HTMLTextAreaElement[];
 }
 
-/** Types "/" at `position`, which opens the insert menu with "Insert chord" as the default (first) action. */
+/** Types "/" at `position`, which opens the insert menu with "Chord" as the default (first) action. */
 async function insertChordAt(
   textarea: HTMLTextAreaElement,
   position: number,
@@ -222,8 +222,8 @@ describe("keyboard navigation between lines", () => {
     fireEvent.keyDown(line, { key: "/" });
     const paletteInput = await screen.findByLabelText("Command palette");
 
-    // Menu order: Insert chord, verse, chorus, bridge, comment, chorddef.
-    // Five ArrowDowns land on "Insert comment", then one ArrowUp lands back on "bridge" —
+    // Menu order: Chord, Verse, Chorus, Bridge, Comment, Chord diagram.
+    // Five ArrowDowns land on "Comment", then one ArrowUp lands back on "Bridge" —
     // exercises both directions before landing on comment for the assertion below.
     fireEvent.keyDown(paletteInput, { key: "ArrowDown" });
     fireEvent.keyDown(paletteInput, { key: "ArrowDown" });
@@ -239,13 +239,13 @@ describe("keyboard navigation between lines", () => {
     expect(document.querySelector(".comment-row")).not.toBeNull();
   });
 
-  it("renders a chord definition chip after using Define chord…", async () => {
+  it("renders a chord definition chip after using Chord diagram", async () => {
     render(<App />);
     const line = lyricLines()[0];
     line.focus();
     fireEvent.keyDown(line, { key: "/" });
     const paletteInput = await screen.findByLabelText("Command palette");
-    fireEvent.change(paletteInput, { target: { value: "Define" } });
+    fireEvent.change(paletteInput, { target: { value: "Chord diagram" } });
     fireEvent.keyDown(paletteInput, { key: "Enter" });
     const nameInput = await screen.findByLabelText("Chord name");
     fireEvent.change(nameInput, { target: { value: "Fmaj7" } });
@@ -266,7 +266,7 @@ describe("keyboard navigation between lines", () => {
     line.focus();
     fireEvent.keyDown(line, { key: "/" });
     const paletteInput = await screen.findByLabelText("Command palette");
-    fireEvent.change(paletteInput, { target: { value: "Define" } });
+    fireEvent.change(paletteInput, { target: { value: "Chord diagram" } });
     fireEvent.keyDown(paletteInput, { key: "Enter" });
     const nameInput = await screen.findByLabelText("Chord name");
     fireEvent.change(nameInput, { target: { value: "Fmaj7" } });
@@ -304,7 +304,7 @@ describe("keyboard navigation between lines", () => {
     line.focus();
     fireEvent.keyDown(line, { key: "/" });
     const paletteInput = await screen.findByLabelText("Command palette");
-    fireEvent.change(paletteInput, { target: { value: "Define" } });
+    fireEvent.change(paletteInput, { target: { value: "Chord diagram" } });
     fireEvent.keyDown(paletteInput, { key: "Enter" });
     const nameInput = await screen.findByLabelText("Chord name");
     fireEvent.change(nameInput, { target: { value: "D" } });
@@ -336,7 +336,7 @@ describe("keyboard navigation between lines", () => {
     line.focus();
     fireEvent.keyDown(line, { key: "/" });
     const paletteInput = await screen.findByLabelText("Command palette");
-    fireEvent.change(paletteInput, { target: { value: "Define" } });
+    fireEvent.change(paletteInput, { target: { value: "Chord diagram" } });
     fireEvent.keyDown(paletteInput, { key: "Enter" });
     const nameInput = await screen.findByLabelText("Chord name");
     fireEvent.change(nameInput, { target: { value: "F" } });
@@ -406,16 +406,16 @@ describe("transpose", () => {
 describe("keyboard help", () => {
   it("toggles open and closed with Mod+K", async () => {
     render(<App />);
-    expect(screen.queryByText("Keyboard commands")).toBeNull();
+    expect(screen.queryByText("Shortcuts")).toBeNull();
 
     modKeyDown("k");
     await waitFor(() => {
-      expect(screen.queryByText("Keyboard commands")).not.toBeNull();
+      expect(screen.queryByText("Shortcuts")).not.toBeNull();
     });
 
     modKeyDown("k");
     await waitFor(() => {
-      expect(screen.queryByText("Keyboard commands")).toBeNull();
+      expect(screen.queryByText("Shortcuts")).toBeNull();
     });
   });
 });
@@ -433,7 +433,7 @@ describe("comment lines", () => {
     setCaret(lyricLines()[0], 0);
     fireEvent.keyDown(lyricLines()[0], { key: "/" });
     const paletteInput = await screen.findByLabelText("Command palette");
-    fireEvent.change(paletteInput, { target: { value: "Insert comment" } });
+    fireEvent.change(paletteInput, { target: { value: "Comment" } });
     fireEvent.keyDown(paletteInput, { key: "Enter" });
 
     const commentInput = await screen.findByLabelText("Comment");
@@ -467,7 +467,7 @@ describe("deleting a chord definition line", () => {
     line.focus();
     fireEvent.keyDown(line, { key: "/" });
     const paletteInput = await screen.findByLabelText("Command palette");
-    fireEvent.change(paletteInput, { target: { value: "Define" } });
+    fireEvent.change(paletteInput, { target: { value: "Chord diagram" } });
     fireEvent.keyDown(paletteInput, { key: "Enter" });
     const nameInput = await screen.findByLabelText("Chord name");
     fireEvent.change(nameInput, { target: { value: name } });

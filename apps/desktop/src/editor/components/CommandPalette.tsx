@@ -1,19 +1,16 @@
 import type { HeadingSection } from "@repo/core";
 import { useState } from "react";
 
+// Labels are short nouns so typing filters usefully — every item starting with
+// "Insert" made the query match everything. The explanation rides alongside as a
+// hint instead of inside the label, and isn't searched.
 const ACTIONS = [
-  { id: "chord", label: "Insert chord" },
-  { id: "verse", label: "Insert verse heading" },
-  {
-    id: "chorus",
-    label: "Insert chorus heading (repeats the first chorus, if any)",
-  },
-  {
-    id: "bridge",
-    label: "Insert bridge heading (repeats the first bridge, if any)",
-  },
-  { id: "comment", label: "Insert comment" },
-  { id: "chorddef", label: "Define chord…" },
+  { id: "chord", label: "Chord", hint: "above the word you're on" },
+  { id: "verse", label: "Verse", hint: "a new, empty verse" },
+  { id: "chorus", label: "Chorus", hint: "copies your first chorus" },
+  { id: "bridge", label: "Bridge", hint: "copies your first bridge" },
+  { id: "comment", label: "Comment", hint: "a note to yourself or the band" },
+  { id: "chorddef", label: "Chord diagram", hint: "draw it on a fretboard" },
 ] as const;
 
 type ActionId = (typeof ACTIONS)[number]["id"];
@@ -124,7 +121,8 @@ export function CommandPalette({
                 onMouseEnter={() => setSelected(index)}
                 onClick={() => run(action.id)}
               >
-                {action.label}
+                <span className="palette-label">{action.label}</span>
+                <span className="palette-hint">{action.hint}</span>
               </button>
             </li>
           ))}

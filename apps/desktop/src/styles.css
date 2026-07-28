@@ -571,6 +571,10 @@ footer.error {
 }
 
 .command-palette li button {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
   width: 100%;
   text-align: left;
   border: none;
@@ -583,6 +587,16 @@ footer.error {
 .command-palette li button:hover,
 .command-palette li button.selected {
   background: var(--accent-weak);
+}
+
+.palette-label {
+  flex-shrink: 0;
+}
+
+.palette-hint {
+  color: var(--text-muted);
+  font-size: 12px;
+  text-align: right;
 }
 
 .keyboard-help {
@@ -599,6 +613,23 @@ footer.error {
 .keyboard-help h2 {
   margin-top: 0;
   font-size: 16px;
+}
+
+.shortcut-group {
+  margin-bottom: 18px;
+}
+
+.shortcut-group h3 {
+  margin: 0 0 4px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.shortcut-group dl {
+  margin: 0;
 }
 
 .keyboard-help-mod {
