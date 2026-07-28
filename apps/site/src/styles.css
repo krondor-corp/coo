@@ -154,6 +154,12 @@ a {
   color: var(--text-muted);
 }
 
+.download-note {
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
 .footer {
   display: flex;
   justify-content: space-between;

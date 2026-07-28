@@ -1,15 +1,52 @@
+<p align="center">
+  <img src="apps/site/public/logo.svg" width="72" height="72" alt="Coo logo">
+</p>
+
 # Coo
 
-Coo is a keyboard-first desktop editor for writing ChordPro songs. It uses a Tauri 2 shell with a React and TypeScript frontend.
+[![CI](https://github.com/krondor-corp/coo/actions/workflows/ci.yml/badge.svg)](https://github.com/krondor-corp/coo/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/krondor-corp/coo?filter=coo-v*&label=release&color=b5651d)](https://github.com/krondor-corp/coo/releases/latest)
+[![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-b5651d)](docs/install.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-b5651d)](https://opensource.org/licenses/MIT)
+[![Site](https://img.shields.io/badge/site-coo.krondor.org-b5651d)](https://coo.krondor.org)
+
+**A command-based ChordPro editor. Write lyrics naturally; insert, rename, and move chords without typing a single bracket.**
+
+**[Visit the site](https://coo.krondor.org)** to download, or read the [quickstart](docs/quickstart.md) and [command reference](docs/commands.md).
+
+## Features
+
+- **Command-based chord entry** — `/` opens an insert menu for chords, section headings, comments, and chord diagrams; no `[Chord]` bracket syntax to type by hand
+- **Keyboard-first editing** — jump between chords, nudge them by character or word, rename in place, all without the mouse
+- **Plain ChordPro underneath** — every file is an ordinary `.chopro` file; open one from anywhere, and what Coo doesn't have a command for round-trips byte-for-byte
+- **Non-destructive transpose** — shift the displayed chords by a semitone without touching the document or the saved file
+- **Recovers from malformed files** — a parse error drops you into raw source with the error shown, and returns to the structured view the moment it's fixed
+
+## Install
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/krondor-corp/coo/main/install.sh | bash
+```
+
+macOS and Linux only — see [docs/install.md](docs/install.md) for Windows, manual downloads, uninstalling, and **the Gatekeeper warning on macOS** (Coo isn't signed/notarized yet — this is expected, not a broken build).
+
+## Quickstart
+
+Open Coo, place your cursor in the lyrics, and press `/`:
+
+```
+/  → Insert chord → "Am" → Enter
+```
+
+That's it — no brackets. See [docs/quickstart.md](docs/quickstart.md) for the rest (headings, comments, chord diagrams, metadata, transpose) and [docs/commands.md](docs/commands.md) for the full keyboard reference. `⌘K` in the app opens the same reference. Common questions are in [docs/faq.md](docs/faq.md).
 
 ## Structure
 
-- `apps/desktop` - Desktop application and Tauri shell
-- `apps/site` - Marketing/download site, deployed to GitHub Pages at [krondor-corp.github.io/coo](https://krondor-corp.github.io/coo)
-- `packages/core` - ChordPro parsing, document model, and rendering
-- `packages/design-tokens` - Shared color/font CSS custom properties, used by both apps so they can't drift out of sync
-- `packages/typescript-config` - Shared TypeScript configuration
-- `docs/tickets/command-editor.md` - Product brief for the command-based editor
+- `apps/desktop` — Tauri 2 + React desktop app
+- `apps/site` — marketing/download site, deployed to [coo.krondor.org](https://coo.krondor.org)
+- `packages/core` — ChordPro parsing, document model, editing commands, and rendering (framework-agnostic)
+- `packages/design-tokens` — shared color/font CSS custom properties
+- `packages/typescript-config` — shared TypeScript configuration
 
 ## Development
 
@@ -18,58 +55,22 @@ pnpm install
 pnpm --filter desktop tauri dev
 ```
 
-Workspace checks:
-
 ```bash
-pnpm check
-pnpm types
-pnpm --filter @repo/core test
-pnpm --filter desktop test
+pnpm check   # biome, whole workspace
+pnpm types   # tsc --noEmit, whole workspace
+pnpm turbo run test   # @repo/core + desktop test suites
 ```
 
-Build the desktop app for the current platform:
+See [docs/development.md](docs/development.md) for more, including building a local installer.
 
-```bash
-pnpm --filter desktop tauri build
-```
+## File format
 
-## Keyboard commands
-
-Coo is a command-based editor: lyrics are typed directly, and chords are inserted, moved, and renamed with the keyboard rather than by editing `[Chord]` brackets by hand. In-app, every shortcut is shown with the actual key for your system (`⌘` on macOS, `Ctrl` on Windows/Linux — both work everywhere regardless of platform detection); the table below shows both since this file isn't platform-aware. The full reference is also available in-app via `⌘K`/`Ctrl+K` or the help icon in the toolbar.
-
-| Shortcut (macOS / Windows·Linux) | Action |
-| --- | --- |
-| `/` (while writing lyrics) | Open the insert menu: chord, verse/chorus/bridge heading, comment, or chord definition |
-| `⌘]` / `⌘[` — `Ctrl+]` / `Ctrl+[` | Jump to the next / previous chord |
-| Type while a chord is focused | Rename it |
-| Arrow keys on a focused chord | Nudge it by one character |
-| `⇧Arrow` — `Shift+Arrow` on a focused chord | Nudge it to the next word boundary |
-| Backspace/Delete on a focused chord | Delete it |
-| Escape on a focused chord | Return to the lyric at that position |
-| `⌘M` — `Ctrl+M` | Focus song metadata (title, author, key, tempo, tuning, and any custom fields) |
-| `⌘E` — `Ctrl+E` | Toggle raw ChordPro source |
-| `⌘K` — `Ctrl+K` | Open the keyboard help |
-| `⌘N` / `⌘O` — `Ctrl+N` / `Ctrl+O` | New / Open |
-| `⌘S` / `⌘⇧S` — `Ctrl+S` / `Ctrl+Shift+S` | Save / Save As |
-
-Repeating a chorus or bridge heading via the insert menu clones the first existing instance of that section rather than starting blank, since restating one from scratch is rarely the intent. Verses always start blank. Directives Coo doesn't have a dedicated command for are preserved verbatim and editable only via the raw source view (`⌘E`/`Ctrl+E`).
+Coo reads and writes plain `.chopro` files — no proprietary format. See [docs/file-format.md](docs/file-format.md) for the frontmatter fields, which directives round-trip untouched, and how transpose works.
 
 ## Releases
 
-Versioning is automated with [release-please](https://github.com/googleapis/release-please) (`.github/workflows/release-please.yml`), following the convention used across Krondor Corp repos (see `krondor-corp/confit`):
+Versioning is automated with [release-please](https://github.com/googleapis/release-please), tagging `coo-vX.Y.Z` on merge, which builds and publishes installers for macOS, Windows, and Linux. See [RELEASES.md](RELEASES.md) for the pipeline, the PAT it needs, and how to trigger a release manually.
 
-1. Commit to `main` using [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `chore:`, etc.) — only commits touching `apps/desktop/**` affect the app's version.
-2. release-please maintains a standing "chore(main): release coo X.Y.Z" PR, bumping the version across `apps/desktop/package.json`, `apps/desktop/src-tauri/tauri.conf.json`, and `apps/desktop/src-tauri/Cargo.toml` together, plus a changelog.
-3. Merging that PR tags `coo-vX.Y.Z`, which triggers `.github/workflows/release-coo.yml`: it builds macOS, Windows, and Linux installers and attaches them to a GitHub Release with checksums.
+## License
 
-**Repo secret required:** `RELEASE_PAT` — a classic PAT with `repo` scope. release-please runs as this token rather than the default `GITHUB_TOKEN` because GitHub blocks the default token's commits/tags from triggering other workflows — without a PAT, the tag it creates on merge wouldn't kick off `release-coo.yml`. Set it with:
-
-```bash
-gh secret set RELEASE_PAT --repo krondor-corp/coo
-```
-
-To release without waiting on release-please (e.g. a hotfix), trigger `release-coo.yml` directly:
-
-```bash
-gh workflow run release-coo.yml -f version=X.Y.Z
-```
+MIT

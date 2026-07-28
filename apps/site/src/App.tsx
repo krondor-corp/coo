@@ -141,6 +141,21 @@ export function App() {
             .
           </p>
         )}
+        {macAsset && (
+          <p className="download-note">
+            macOS will warn that Coo is from an unidentified developer — it
+            isn't signed or notarized yet. Right-click the app and choose Open,
+            or see{" "}
+            <a
+              href={`https://github.com/${REPO}/blob/main/docs/install.md`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              the install guide
+            </a>
+            .
+          </p>
+        )}
       </section>
 
       <footer className="footer">
