@@ -29,7 +29,7 @@ Arrow Up/Down move the highlight, Enter picks one, and typing narrows the list.
 
 | Shortcut | What it does |
 | --- | --- |
-| `⌘]` / `⌘[` | Jump to the next or previous chord in the song |
+| Tab / `⇧`Tab | Jump to the next or previous chord in the song |
 | Click a chord | Select it |
 | Type anything | Rename the selected chord |
 | Arrow Left/Right | Nudge it one letter |

@@ -16,7 +16,7 @@ Put your cursor where the chord should sit and press **`/`**. Choose **Insert ch
 
 ## move a chord
 
-Click a chord to select it (or jump between chords with `⌘]` / `⌘[`), then:
+Click a chord to select it, or press **Tab** to jump from chord to chord (**⇧Tab** to go back). Then:
 
 - **Arrow keys** — nudge it one letter left or right
 - **Shift+Arrow** — jump to the next word

@@ -552,6 +552,49 @@ describe("chord token arrow-key navigation", () => {
   });
 });
 
+describe("Tab jumps between chords", () => {
+  it("moves to the next chord on Tab and back on Shift+Tab, from inside the song", async () => {
+    render(<App />);
+    // Drop the starter document's chord so the only chords present are the two
+    // this test adds, with names that can't be confused for each other.
+    const starterChord = screen.getByRole("button", { name: "C" });
+    starterChord.focus();
+    fireEvent.keyDown(starterChord, { key: "Backspace" });
+    fireEvent.change(lyricLines()[0], { target: { value: "hello world" } });
+    await insertChordAt(lyricLines()[0], 0, "Am");
+    await insertChordAt(lyricLines()[0], 6, "F");
+
+    lyricLines()[0].focus();
+    fireEvent.keyDown(window, { key: "Tab" });
+    await waitFor(() => {
+      expect(document.activeElement?.textContent).toBe("Am");
+    });
+
+    fireEvent.keyDown(window, { key: "Tab" });
+    await waitFor(() => {
+      expect(document.activeElement?.textContent).toBe("F");
+    });
+
+    fireEvent.keyDown(window, { key: "Tab", shiftKey: true });
+    await waitFor(() => {
+      expect(document.activeElement?.textContent).toBe("Am");
+    });
+  });
+
+  it("leaves Tab alone outside the song, so metadata fields tab normally", async () => {
+    render(<App />);
+    await insertChordAt(lyricLines()[0], 0, "C");
+
+    const title = screen.getByLabelText("Title") as HTMLInputElement;
+    title.focus();
+    fireEvent.keyDown(window, { key: "Tab" });
+
+    // Focus stays put — the browser's own tabbing takes over from here, rather
+    // than the caret being yanked into the song's chord lane.
+    expect(document.activeElement).toBe(title);
+  });
+});
+
 describe("chord-only lines (e.g. an instrumental intro)", () => {
   it("lays chords out in a flowing row instead of overlapping when there's no lyric text to anchor to", async () => {
     render(<App />);

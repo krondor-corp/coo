@@ -17,7 +17,7 @@ const GROUPS: Group[] = [
   {
     title: "Chords",
     shortcuts: [
-      [`${MOD}] / ${MOD}[`, "Go to the next / previous chord"],
+      [`Tab / ${SHIFT}Tab`, "Go to the next / previous chord"],
       ["Type", "Rename the selected chord"],
       ["← →", "Nudge it one letter"],
       [`${SHIFT}← →`, "Nudge it to the next word"],

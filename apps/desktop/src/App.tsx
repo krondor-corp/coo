@@ -392,14 +392,16 @@ export function App() {
           setShowHelp((value) => !value);
           return;
         }
-        if (key === "]") {
+      }
+      // Tab cycles chords while you're inside the song — no modifier, and it works
+      // on every keyboard layout. Elsewhere (metadata fields, toolbar, the insert
+      // menu, raw source) Tab keeps its normal move-focus behaviour, and Up/Down
+      // still move between lyric lines.
+      if (event.key === "Tab" && !matchesMod(event) && !event.altKey) {
+        const active = window.document.activeElement;
+        if (active?.closest(".document-view")) {
           event.preventDefault();
-          navigateChords(1);
-          return;
-        }
-        if (key === "[") {
-          event.preventDefault();
-          navigateChords(-1);
+          navigateChords(event.shiftKey ? -1 : 1);
           return;
         }
       }
