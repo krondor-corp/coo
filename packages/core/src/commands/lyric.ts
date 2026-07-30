@@ -48,10 +48,20 @@ export function setLyricText(
   const editOldEnd = line.chars.length - suffix;
   const delta = newChars.length - line.chars.length;
 
+  const oldLength = line.chars.length;
+  // A chord sitting at the very end of the line isn't above a character yet — it
+  // marks where the next word will be sung. Appending text there must leave it
+  // where it is, so it lands above the first character typed after it instead of
+  // being dragged along behind the caret. Mid-line inserts and deletions still
+  // move it, since then it really is anchored relative to the edit.
+  const appendingAtLineEnd = delta > 0 && prefix >= oldLength;
+
   const chords = line.chords.map((chord) => {
     if (chord.position < prefix) return chord;
-    if (chord.position >= editOldEnd)
+    if (chord.position >= editOldEnd) {
+      if (appendingAtLineEnd && chord.position === oldLength) return chord;
       return { ...chord, position: chord.position + delta };
+    }
     return { ...chord, position: prefix };
   });
 

@@ -754,6 +754,37 @@ describe("undo and redo", () => {
   });
 });
 
+describe("a chord inserted at the end of a line", () => {
+  it("stays put as you keep typing instead of following the caret", async () => {
+    render(<App />);
+    const starterChord = screen.getByRole("button", { name: "C" });
+    starterChord.focus();
+    fireEvent.keyDown(starterChord, { key: "Backspace" });
+
+    fireEvent.change(lyricLines()[0], { target: { value: "Hello " } });
+    // Insert a chord with the caret at the end — marking where the next word goes.
+    await insertChordAt(lyricLines()[0], 6, "G");
+    const token = document.querySelector(".chord-token") as HTMLElement;
+    expect(token.style.left).toBe("6ch");
+
+    // Now type the word that chord belongs to.
+    fireEvent.change(lyricLines()[0], { target: { value: "Hello t" } });
+    fireEvent.change(lyricLines()[0], { target: { value: "Hello there" } });
+
+    await waitFor(() => {
+      const after = document.querySelector(".chord-token") as HTMLElement;
+      expect(after.style.left).toBe("6ch");
+    });
+
+    // And it serializes above "there", not stranded at the end of the line.
+    modKeyDown("e");
+    const rawSource = (await screen.findByLabelText(
+      "ChordPro source",
+    )) as HTMLTextAreaElement;
+    expect(rawSource.value).toContain("Hello [G]there");
+  });
+});
+
 describe("Tab jumps between chords", () => {
   it("moves to the next chord on Tab and back on Shift+Tab, from inside the song", async () => {
     render(<App />);

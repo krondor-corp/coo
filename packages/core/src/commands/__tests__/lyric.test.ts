@@ -44,6 +44,57 @@ describe("setLyricText", () => {
     const edited = setLyricText(original, lineId, "Hello there");
     expect(lyric(edited).chords[0].position).toBe(0);
   });
+
+  it("keeps a chord parked at the end of the line put while you keep typing", () => {
+    const makeId = createIdFactory();
+    const original = doc("Hello", makeId);
+    const lineId = lyric(original).id;
+    // A chord inserted with the caret at end-of-line isn't above any character
+    // yet — it marks where the next word will be sung.
+    const withChord = insertChordAt(original, lineId, 5, "G", makeId);
+    expect(lyric(withChord).chords[0].position).toBe(5);
+
+    // Typing the word it belongs to must not drag it along behind the caret.
+    let edited = setLyricText(withChord, lineId, "Hello ");
+    expect(lyric(edited).chords[0].position).toBe(5);
+
+    edited = setLyricText(edited, lineId, "Hello t");
+    expect(lyric(edited).chords[0].position).toBe(5);
+
+    edited = setLyricText(edited, lineId, "Hello there");
+    expect(lyric(edited).chords[0].position).toBe(5);
+  });
+
+  it("keeps a chord on an otherwise empty line put once lyrics arrive", () => {
+    const makeId = createIdFactory();
+    const original = doc("", makeId);
+    const lineId = lyric(original).id;
+    const withChord = insertChordAt(original, lineId, 0, "Am", makeId);
+
+    const edited = setLyricText(withChord, lineId, "Sing");
+    expect(lyric(edited).chords[0].position).toBe(0);
+  });
+
+  it("still keeps a trailing chord trailing when the edit is mid-line", () => {
+    const makeId = createIdFactory();
+    const original = doc("Hello", makeId);
+    const lineId = lyric(original).id;
+    const withChord = insertChordAt(original, lineId, 5, "G", makeId);
+
+    // Inserting earlier in the line genuinely does push the trailing chord along.
+    const edited = setLyricText(withChord, lineId, "HeXllo");
+    expect(lyric(edited).chords[0].position).toBe(6);
+  });
+
+  it("pulls a trailing chord back in when the text shrinks", () => {
+    const makeId = createIdFactory();
+    const original = doc("Hello", makeId);
+    const lineId = lyric(original).id;
+    const withChord = insertChordAt(original, lineId, 5, "G", makeId);
+
+    const edited = setLyricText(withChord, lineId, "Hell");
+    expect(lyric(edited).chords[0].position).toBe(4);
+  });
 });
 
 describe("splitLine / mergeLineUp", () => {
