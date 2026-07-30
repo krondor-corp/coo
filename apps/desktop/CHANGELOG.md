@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.4.0](https://github.com/krondor-corp/coo/compare/coo-v0.3.1...coo-v0.4.0) (2026-07-30)
+
+
+### Features
+
+* **desktop:** print the song, and make transpose view-only ([fddd4f9](https://github.com/krondor-corp/coo/commit/fddd4f9a5873717f436d53fbb8eba692aae93b7e))
+
+
+### Bug Fixes
+
+* **core:** stop an end-of-line chord chasing the caret ([eff43b5](https://github.com/krondor-corp/coo/commit/eff43b5ff7db70e71c360667423325625d055d6d))
+
 ## [0.3.1](https://github.com/krondor-corp/coo/compare/coo-v0.3.0...coo-v0.3.1) (2026-07-28)
 
 
