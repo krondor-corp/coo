@@ -45,6 +45,10 @@ Same `/` menu:
 
 The `−`/`+` buttons next to the key shift every chord on screen and show where you've landed (`→ D`). This only changes what you're looking at. Your file keeps the chords and the key you actually wrote — so transposing on the fly for a singer never rewrites the song. See [the file format](./file-format.md#transpose).
 
+## print it
+
+**⌘P** prints a clean sheet — title, the details, chord diagrams, and the song, without any of the editor around it. It prints **the key you're currently looking at**, so if you've transposed down a tone for a singer, that's what comes out of the printer. Your file still keeps the original.
+
 ## save
 
 `⌘S` saves, `⌘⇧S` saves a copy somewhere new. `⌘N` starts a new song, `⌘O` opens an existing one.

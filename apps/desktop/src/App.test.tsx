@@ -375,8 +375,8 @@ describe("keyboard navigation between lines", () => {
   });
 });
 
-describe("transpose", () => {
-  it("transposes chords and updates the written key field together", async () => {
+describe("transpose is a view, not an edit", () => {
+  it("shifts the chords on screen but leaves the written key field alone", async () => {
     render(<App />);
     // Starter document ships in key C with a [C] chord on the placeholder lyric.
     expect((screen.getByLabelText("key") as HTMLInputElement).value).toBe("C");
@@ -386,10 +386,28 @@ describe("transpose", () => {
     await waitFor(() => {
       expect(document.querySelector(".chord-token")?.textContent).toBe("C#");
     });
-    expect((screen.getByLabelText("key") as HTMLInputElement).value).toBe("C#");
+    // The author wrote "C" — playing it a semitone up doesn't change that.
+    expect((screen.getByLabelText("key") as HTMLInputElement).value).toBe("C");
   });
 
-  it("persists the transposed chords and key to the saved file", async () => {
+  it("shows which key you're hearing while the written one stays put", async () => {
+    render(<App />);
+    fireEvent.click(screen.getByLabelText("Transpose up a semitone"));
+    fireEvent.click(screen.getByLabelText("Transpose up a semitone"));
+
+    const indicator = await screen.findByLabelText(
+      "Showing in D — click to return to the written key",
+    );
+    expect(indicator.textContent).toContain("D");
+
+    // Clicking it drops back to the written key.
+    fireEvent.click(indicator);
+    await waitFor(() => {
+      expect(document.querySelector(".chord-token")?.textContent).toBe("C");
+    });
+  });
+
+  it("saves the song the author wrote, not the transposed view", async () => {
     render(<App />);
 
     fireEvent.click(screen.getByLabelText("Transpose up a semitone"));
@@ -403,8 +421,66 @@ describe("transpose", () => {
     modKeyDown("s");
     await waitFor(() => expect(writeTextFile).toHaveBeenCalled());
     const [, savedContent] = vi.mocked(writeTextFile).mock.calls[0];
-    expect(savedContent).toContain("[D]Start writing here");
-    expect(savedContent).toContain("key: D");
+    expect(savedContent).toContain("[C]Start writing here");
+    expect(savedContent).toContain("key: C");
+    expect(savedContent).not.toContain("[D]");
+    expect(savedContent).not.toContain("key: D");
+  });
+
+  it("doesn't mark the document dirty just for looking at another key", async () => {
+    render(<App />);
+    fireEvent.click(screen.getByLabelText("Transpose up a semitone"));
+    await waitFor(() => {
+      expect(document.querySelector(".chord-token")?.textContent).toBe("C#");
+    });
+    // A "*" in the title bar would claim there are unsaved changes when there aren't.
+    expect(document.querySelector(".file-title")?.textContent).not.toContain(
+      "*",
+    );
+  });
+});
+
+describe("printing", () => {
+  it("prints the song, transposed to what's on screen", async () => {
+    const print = vi.fn();
+    vi.stubGlobal("print", print);
+    render(<App />);
+
+    fireEvent.click(screen.getByLabelText("Transpose up a semitone"));
+    fireEvent.click(screen.getByLabelText("Transpose up a semitone"));
+    await waitFor(() => {
+      expect(document.querySelector(".chord-token")?.textContent).toBe("D");
+    });
+
+    const sheet = document.querySelector(".print-sheet");
+    if (!sheet) throw new Error("expected a print sheet in the DOM");
+    // The sheet carries the transposed chord and the transposed key, while the
+    // editor's own key field still shows what the author wrote.
+    expect(sheet.textContent).toContain("D");
+    expect(sheet.querySelector(".print-meta")?.textContent).toContain("key: D");
+    expect((screen.getByLabelText("key") as HTMLInputElement).value).toBe("C");
+
+    fireEvent.click(screen.getByLabelText("Print"));
+    expect(print).toHaveBeenCalled();
+    vi.unstubAllGlobals();
+  });
+
+  it("prints on the keyboard shortcut too", async () => {
+    const print = vi.fn();
+    vi.stubGlobal("print", print);
+    render(<App />);
+    modKeyDown("p");
+    await waitFor(() => expect(print).toHaveBeenCalled());
+    vi.unstubAllGlobals();
+  });
+
+  it("puts the title and the untransposed key on the sheet by default", async () => {
+    render(<App />);
+    const sheet = document.querySelector(".print-sheet");
+    expect(sheet?.querySelector("h1")?.textContent).toBe("Untitled");
+    expect(sheet?.querySelector(".print-meta")?.textContent).toContain(
+      "key: C",
+    );
   });
 });
 

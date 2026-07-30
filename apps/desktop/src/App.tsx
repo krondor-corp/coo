@@ -5,8 +5,15 @@ import type {
   HeadingSection,
 } from "@repo/core";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { CircleHelp, FilePlus2, FolderOpen, Save, SaveAll } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  CircleHelp,
+  FilePlus2,
+  FolderOpen,
+  Printer,
+  Save,
+  SaveAll,
+} from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ChordDefinitionChip,
   CommandPalette,
@@ -16,6 +23,7 @@ import {
   LyricLine,
   MetadataBar,
   PassthroughLine,
+  PrintSheet,
   RawSourceView,
   adjacentLyricLine,
   convertLyricToComment,
@@ -85,6 +93,8 @@ export function App() {
   const [status, setStatus] = useState("Ready");
   const [showPalette, setShowPalette] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
+  /** Semitones the view is shifted by. Never written to the document or the file. */
+  const [transposeOffset, setTransposeOffset] = useState(0);
   const [confirmRequest, setConfirmRequest] = useState<ConfirmRequest | null>(
     null,
   );
@@ -116,6 +126,22 @@ export function App() {
   );
 
   const dirty = isDirty(source, savedSource);
+
+  // What the editor draws. Derived from the real document, never written back — so
+  // every edit callback below still targets `document`/`documentRef`, not this.
+  const displayDocument = useMemo(
+    () =>
+      !document || transposeOffset === 0
+        ? document
+        : transposeDocument(document, transposeOffset),
+    [document, transposeOffset],
+  );
+
+  const writtenKey = readSongSource(source)?.metadata.key;
+  const displayKey =
+    writtenKey && transposeOffset !== 0
+      ? transposeKey(writtenKey, transposeOffset)
+      : undefined;
 
   // Applies `pendingFocus` once the target textarea exists in the DOM (after a render commit
   // from split/merge/navigate/load), then clears it. Imperative DOM focus is unavoidable here:
@@ -276,11 +302,26 @@ export function App() {
     if (newLine) setFocus({ kind: "comment", lineId: newLine.id });
   }
 
-  /** Transposes every chord in the document, and updates the written `key` field to match. */
+  /**
+   * Transposing is a view, not an edit: it shifts only what's on screen (and what
+   * prints), leaving the document, the file and the author's `key` field alone.
+   * Playing a song in a different key for one singer isn't a change to the song.
+   */
   function transpose(semitones: number) {
-    withDocument((doc) => transposeDocument(doc, semitones));
-    const currentKey = readSongSource(sourceRef.current)?.metadata.key;
-    if (currentKey) updateMetadata("key", transposeKey(currentKey, semitones));
+    setTransposeOffset((offset) => offset + semitones);
+  }
+
+  /**
+   * Hands off to the OS print dialog. The clean sheet is already in the DOM and
+   * hidden until `@media print` reveals it, rather than being written into a
+   * popup — Tauri's webview won't reliably give us `window.open`.
+   */
+  function printSong() {
+    if (parseError) {
+      setStatus("Can't print until the song parses — fix it in plain text");
+      return;
+    }
+    window.print();
   }
 
   async function newDocument() {
@@ -407,6 +448,11 @@ export function App() {
           redo();
           return;
         }
+        if (key === "p") {
+          event.preventDefault();
+          printSong();
+          return;
+        }
       }
       // Tab cycles chords while you're inside the song — no modifier, and it works
       // on every keyboard layout. Elsewhere (metadata fields, toolbar, the insert
@@ -473,6 +519,14 @@ export function App() {
         <div className="toolbar-group">
           <button
             type="button"
+            aria-label="Print"
+            title={`Print (${MOD}P)`}
+            onClick={printSong}
+          >
+            <Printer size={16} />
+          </button>
+          <button
+            type="button"
             aria-label="Keyboard commands"
             title={`Keyboard commands (${MOD}K) · Toggle raw source (${MOD}E)`}
             onClick={() => setShowHelp(true)}
@@ -482,7 +536,7 @@ export function App() {
         </div>
       </header>
 
-      {rawMode || !document ? (
+      {rawMode || !document || !displayDocument ? (
         <RawSourceView
           source={source}
           error={parseError}
@@ -494,11 +548,13 @@ export function App() {
             source={source}
             onChange={updateMetadata}
             onTranspose={transpose}
+            displayKey={displayKey}
+            onResetTranspose={() => setTransposeOffset(0)}
             titleRef={titleFieldRef}
           />
           <div className="document-scroll">
             <section className="document-view">
-              {document.lines.map((line) => {
+              {displayDocument.lines.map((line) => {
                 switch (line.kind) {
                   case "lyric":
                     return (
@@ -704,6 +760,11 @@ export function App() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Always mounted, invisible until printing — see the @media print rules. */}
+      {!parseError && (
+        <PrintSheet source={source} transposeOffset={transposeOffset} />
       )}
     </main>
   );

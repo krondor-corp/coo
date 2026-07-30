@@ -21,6 +21,9 @@ type Props = {
   source: string;
   onChange: (field: string, value: string) => void;
   onTranspose: (semitones: number) => void;
+  /** Set only while the view is transposed — the key you're seeing, not the key on file. */
+  displayKey?: string;
+  onResetTranspose?: () => void;
   titleRef?: Ref<HTMLInputElement>;
 };
 
@@ -28,6 +31,8 @@ export function MetadataBar({
   source,
   onChange,
   onTranspose,
+  displayKey,
+  onResetTranspose,
   titleRef,
 }: Props) {
   const metadata = useMemo(
@@ -90,6 +95,17 @@ export function MetadataBar({
             +
           </button>
         </div>
+        {displayKey && (
+          <button
+            type="button"
+            className="transpose-indicator"
+            aria-label={`Showing in ${displayKey} — click to return to the written key`}
+            title="Click to return to the written key"
+            onClick={onResetTranspose}
+          >
+            → {displayKey}
+          </button>
+        )}
         <span className="song-caption-dot">·</span>
         {caption("tempo", "tempo")}
         <span className="song-caption-dot">·</span>

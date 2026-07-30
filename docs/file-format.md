@@ -40,6 +40,9 @@ The `−`/`+` control is a view, not an edit. It shifts every chord on screen by
 
 - nothing is written to your file
 - the `key:` field is never rewritten
+- the song isn't marked as having unsaved changes
+
+Printing (`⌘P`) follows the view, though — transpose for a singer, print, and you get the chart in the key you're playing while the file keeps the original.
 
 That's deliberate. Transposing to suit a singer at rehearsal doesn't mean the song has changed key, so Coo doesn't rewrite what you wrote.
 

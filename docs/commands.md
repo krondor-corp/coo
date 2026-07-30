@@ -56,5 +56,6 @@ Title, author, key, tempo, and tuning have their own spots. Anything else you wa
 | `⌘O` | Open |
 | `⌘S` | Save |
 | `⌘⇧S` | Save a copy |
+| `⌘P` | Print |
 | `⌘E` | Show the plain text behind the song |
 | `⌘K` | Show or hide this list |

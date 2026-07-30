@@ -26,6 +26,10 @@ No. The `−`/`+` buttons only change what's on screen. Your file keeps the chor
 
 Coo tells you what's wrong — a missing title, a tempo that isn't a number — and switches to the plain-text view so you can fix it directly. It rechecks as you type and returns to the normal view as soon as the song makes sense again. Nothing is lost in between.
 
+## Can I print a song?
+
+Yes — **⌘P**. You get a clean sheet with the title, the song details, any chord diagrams, and the chords over the lyrics; none of the editor's furniture comes along. It prints in whatever key you're currently viewing, so transposing for a singer and then printing gives you the chart you'll actually play from.
+
 ## Is there a phone or tablet version?
 
 Not yet. Coo runs on Mac, Windows, and Linux computers.
