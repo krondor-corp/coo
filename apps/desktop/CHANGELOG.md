@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.5.0](https://github.com/krondor-corp/coo/compare/coo-v0.4.0...coo-v0.5.0) (2026-08-05)
+
+
+### Features
+
+* **desktop:** export the chart as a PDF instead of calling window.print ([f39087d](https://github.com/krondor-corp/coo/commit/f39087d64a7886d0a835086f3dc78d930e033def))
+
+
+### Bug Fixes
+
+* **desktop:** align chords to the lyric grid, select new ones on insert ([a8f896e](https://github.com/krondor-corp/coo/commit/a8f896e33b0f5b8146ceac82e2d6b72b4f3e9029))
+
 ## [0.4.0](https://github.com/krondor-corp/coo/compare/coo-v0.3.1...coo-v0.4.0) (2026-07-30)
 
 
