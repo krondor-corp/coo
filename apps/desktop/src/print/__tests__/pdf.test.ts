@@ -54,6 +54,28 @@ title: Shapes
     expect(header(bytes)).toBe("%PDF-");
   });
 
+  it("renders an interlude of bare chords without stacking them", () => {
+    // Chords with no lyrics under them all sit at column 0, which used to draw
+    // every name on the same spot as one unreadable blob.
+    const song = songFrom(
+      `---
+title: Interlude
+---
+[Em7][Am7][G][F]
+words underneath here
+`,
+      { title: "Interlude" },
+    );
+    const bare = song.lines.find(
+      (line) =>
+        line.kind === "lyric" &&
+        line.chords.length === 4 &&
+        line.chars.join("").trim() === "",
+    );
+    expect(bare).toBeDefined();
+    expect(header(renderSongPdf(song))).toBe("%PDF-");
+  });
+
   it("handles an empty song without throwing", () => {
     const song: PrintableSong = {
       title: "Blank",

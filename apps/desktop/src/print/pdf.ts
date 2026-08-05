@@ -1,5 +1,6 @@
 import type { ChordDefinition } from "@repo/core";
 import { jsPDF } from "jspdf";
+import { layoutChordRow, rowCount } from "./layout";
 import type { PrintableSong } from "./types";
 
 const MARGIN = 48; // 2/3 inch, in points
@@ -189,29 +190,52 @@ export function renderSongPdf(song: PrintableSong): Uint8Array {
     switch (line.kind) {
       case "lyric": {
         const text = line.chars.join("");
+        const hasLyrics = text.trim().length > 0;
+        const hasChords = line.chords.length > 0;
+
         // A line with neither words nor chords is a blank spacer.
-        if (text.trim().length === 0 && line.chords.length === 0) {
+        if (!hasLyrics && !hasChords) {
           y += lyricLineHeight * 0.6;
           break;
         }
-        const hasChords = line.chords.length > 0;
-        ensureRoom((hasChords ? chordRowHeight : 0) + lyricLineHeight);
 
-        if (hasChords) {
+        // Without lyrics underneath there's nothing to anchor to — an
+        // instrumental bar has every chord at column 0, so they get flowed
+        // left-to-right instead of stacked on the same spot.
+        const placed = layoutChordRow(line.chords, {
+          charWidth: cw,
+          usableWidth: USABLE_WIDTH,
+          anchored: hasLyrics,
+        });
+        const chordRows = rowCount(placed);
+
+        ensureRoom(
+          chordRows * chordRowHeight + (hasLyrics ? lyricLineHeight : 0),
+        );
+
+        if (chordRows > 0) {
           doc.setFont("courier", "bold");
           doc.setFontSize(bodySize);
           doc.setTextColor(0);
-          for (const chord of line.chords) {
-            doc.text(chord.name, MARGIN + chord.position * cw, y);
+          for (const chord of placed) {
+            doc.text(
+              chord.name,
+              MARGIN + chord.x,
+              y + chord.row * chordRowHeight,
+            );
           }
-          y += chordRowHeight;
+          y += chordRows * chordRowHeight;
         }
 
-        doc.setFont("courier", "normal");
-        doc.setFontSize(bodySize);
-        doc.setTextColor(0);
-        if (text.length > 0) doc.text(text, MARGIN, y);
-        y += lyricLineHeight;
+        if (hasLyrics) {
+          doc.setFont("courier", "normal");
+          doc.setFontSize(bodySize);
+          doc.setTextColor(0);
+          doc.text(text, MARGIN, y);
+          y += lyricLineHeight;
+        } else {
+          y += lyricLineHeight * 0.4;
+        }
         break;
       }
 
