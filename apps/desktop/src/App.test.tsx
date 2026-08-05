@@ -764,15 +764,15 @@ describe("a chord inserted at the end of a line", () => {
     fireEvent.change(lyricLines()[0], { target: { value: "Hello " } });
     // Insert a chord with the caret at the end — marking where the next word goes.
     await insertChordAt(lyricLines()[0], 6, "G");
-    const token = document.querySelector(".chord-token") as HTMLElement;
-    expect(token.style.left).toBe("6ch");
+    const anchor = document.querySelector(".chord-anchor") as HTMLElement;
+    expect(anchor.style.left).toBe("6ch");
 
     // Now type the word that chord belongs to.
     fireEvent.change(lyricLines()[0], { target: { value: "Hello t" } });
     fireEvent.change(lyricLines()[0], { target: { value: "Hello there" } });
 
     await waitFor(() => {
-      const after = document.querySelector(".chord-token") as HTMLElement;
+      const after = document.querySelector(".chord-anchor") as HTMLElement;
       expect(after.style.left).toBe("6ch");
     });
 
@@ -782,6 +782,28 @@ describe("a chord inserted at the end of a line", () => {
       "ChordPro source",
     )) as HTMLTextAreaElement;
     expect(rawSource.value).toContain("Hello [G]there");
+  });
+});
+
+describe("a newly inserted chord is selected", () => {
+  it("lands selected so the arrow keys nudge it without any extra clicking", async () => {
+    render(<App />);
+    fireEvent.change(lyricLines()[0], { target: { value: "hello world" } });
+    await insertChordAt(lyricLines()[0], 6, "Bm");
+
+    // Focus should be on the new chord itself, not back in the lyric text.
+    await waitFor(() => {
+      expect(document.activeElement?.textContent).toBe("Bm");
+    });
+
+    // So it can be moved immediately.
+    fireEvent.keyDown(document.activeElement as Element, { key: "ArrowLeft" });
+    await waitFor(() => {
+      const anchor = Array.from(
+        document.querySelectorAll(".chord-anchor"),
+      ).find((el) => el.textContent === "Bm") as HTMLElement;
+      expect(anchor.style.left).toBe("5ch");
+    });
   });
 });
 
@@ -850,10 +872,16 @@ describe("chord-only lines (e.g. an instrumental intro)", () => {
     const tokens = Array.from(document.querySelectorAll(".chord-token"));
     expect(tokens.length).toBe(4);
     for (const token of tokens) {
-      // Flow layout doesn't anchor chords to a character position, so
-      // there's no inline "left" pinning them into an overlapping stack.
-      expect((token as HTMLElement).style.left).toBe("");
       expect(token.classList.contains("chord-token-flow")).toBe(true);
+    }
+
+    const anchors = Array.from(document.querySelectorAll(".chord-anchor"));
+    expect(anchors.length).toBe(4);
+    for (const anchor of anchors) {
+      // Flow layout doesn't anchor chords to a character position, so there's
+      // no inline "left" pinning them into an overlapping stack.
+      expect((anchor as HTMLElement).style.left).toBe("");
+      expect(anchor.classList.contains("chord-anchor-flow")).toBe(true);
     }
   });
 
@@ -865,8 +893,27 @@ describe("chord-only lines (e.g. an instrumental intro)", () => {
 
     const lane = document.querySelector(".chord-lane");
     expect(lane?.classList.contains("chord-lane-flow")).toBe(false);
-    const token = document.querySelector(".chord-token") as HTMLElement;
-    expect(token.style.left).toBe("0ch");
+    // The offset lives on the anchor, whose font matches the lyric text, so a
+    // `ch` is exactly one lyric character. Putting it on the smaller pill instead
+    // slid every chord left in proportion to its column.
+    const anchor = document.querySelector(".chord-anchor") as HTMLElement;
+    expect(anchor.style.left).toBe("0ch");
+    expect(
+      (document.querySelector(".chord-token") as HTMLElement).style.left,
+    ).toBe("");
+  });
+
+  it("offsets a chord late in the line by its full column count", async () => {
+    render(<App />);
+    fireEvent.change(lyricLines()[0], {
+      target: { value: "a rather long line of lyrics to sing here" },
+    });
+    await insertChordAt(lyricLines()[0], 30, "Bm");
+
+    const anchor = Array.from(document.querySelectorAll(".chord-anchor")).find(
+      (el) => el.textContent === "Bm",
+    ) as HTMLElement;
+    expect(anchor.style.left).toBe("30ch");
   });
 });
 

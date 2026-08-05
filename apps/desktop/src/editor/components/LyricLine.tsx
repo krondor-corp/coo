@@ -97,43 +97,53 @@ export function LyricLine({
     >
       <div className={`chord-lane${isChordOnly ? " chord-lane-flow" : ""}`}>
         {line.chords.map((chord) => (
-          <ChordToken
+          // The anchor owns the positioning so that `ch` resolves against the
+          // lyric text's font, not the chord pill's smaller one — otherwise every
+          // chord drifts left in proportion to how far along the line it sits.
+          <span
             key={chord.id}
-            chord={chord}
-            layout={isChordOnly ? "flow" : "absolute"}
-            focused={focus?.kind === "chord" && focus.chordId === chord.id}
-            editing={
-              focus?.kind === "chord" &&
-              focus.chordId === chord.id &&
-              focus.editing
-            }
-            onRename={(name) => renameChord(chord.id, name)}
-            onDelete={() => deleteChord(chord.id)}
-            onMove={(delta) => moveChord(chord.id, delta)}
-            onMoveBoundary={(direction) =>
-              moveChordToBoundary(chord.id, direction)
-            }
-            onFocus={() => focusChord(chord.id, false)}
-            onEnterEdit={() => focusChord(chord.id, true)}
-            onExitEdit={() => focusChord(chord.id, false)}
-            onAdjacent={(direction) => focusAdjacentChord(chord.id, direction)}
-            onEscape={() => {
-              focusChord(null);
-              textareaRef.current?.focus();
-              textareaRef.current?.setSelectionRange(
-                chord.position,
-                chord.position,
-              );
-            }}
-            onNavigateUp={() => {
-              focusChord(null);
-              onNavigateUp(chord.position);
-            }}
-            onNavigateDown={() => {
-              focusChord(null);
-              onNavigateDown(chord.position);
-            }}
-          />
+            className={`chord-anchor${isChordOnly ? " chord-anchor-flow" : ""}`}
+            style={isChordOnly ? undefined : { left: `${chord.position}ch` }}
+          >
+            <ChordToken
+              chord={chord}
+              layout={isChordOnly ? "flow" : "absolute"}
+              focused={focus?.kind === "chord" && focus.chordId === chord.id}
+              editing={
+                focus?.kind === "chord" &&
+                focus.chordId === chord.id &&
+                focus.editing
+              }
+              onRename={(name) => renameChord(chord.id, name)}
+              onDelete={() => deleteChord(chord.id)}
+              onMove={(delta) => moveChord(chord.id, delta)}
+              onMoveBoundary={(direction) =>
+                moveChordToBoundary(chord.id, direction)
+              }
+              onFocus={() => focusChord(chord.id, false)}
+              onEnterEdit={() => focusChord(chord.id, true)}
+              onExitEdit={() => focusChord(chord.id, false)}
+              onAdjacent={(direction) =>
+                focusAdjacentChord(chord.id, direction)
+              }
+              onEscape={() => {
+                focusChord(null);
+                textareaRef.current?.focus();
+                textareaRef.current?.setSelectionRange(
+                  chord.position,
+                  chord.position,
+                );
+              }}
+              onNavigateUp={() => {
+                focusChord(null);
+                onNavigateUp(chord.position);
+              }}
+              onNavigateDown={() => {
+                focusChord(null);
+                onNavigateDown(chord.position);
+              }}
+            />
+          </span>
         ))}
       </div>
       <textarea

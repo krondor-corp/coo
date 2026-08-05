@@ -271,10 +271,24 @@ export function App() {
 
   function insertChordAtCaret(name: string) {
     const caret = activeCaretRef.current;
-    if (!caret) return;
-    withDocument((doc) =>
-      insertChordAt(doc, caret.lineId, caret.position, name, makeId),
+    const before = documentRef.current;
+    if (!caret || !before) return;
+
+    const existing = new Set(listChords(before).map((c) => c.chord.id));
+    const next = insertChordAt(
+      before,
+      caret.lineId,
+      caret.position,
+      name,
+      makeId,
     );
+    applyDocument(next);
+
+    // Leave the new chord selected so the arrow keys nudge it straight away —
+    // you almost always want to shift it a syllable or two after placing it.
+    const created = listChords(next).find((c) => !existing.has(c.chord.id));
+    if (created)
+      setFocus({ kind: "chord", chordId: created.chord.id, editing: false });
   }
 
   /** Typing ">" at the start of a lyric line converts it into a comment and focuses it. */

@@ -255,6 +255,14 @@ button {
 .lyric-row {
   position: relative;
   padding-top: 20px;
+  /*
+   * Chords are positioned in `ch` units of the lyric text, so the anchor doing
+   * the positioning and the lyric textarea must resolve `ch` against the very
+   * same font. Both read these two, and nothing else should hardcode them —
+   * a mismatch slides every chord sideways in proportion to its column.
+   */
+  --lyric-font: var(--mono);
+  --lyric-font-size: 15px;
 }
 
 .lyric-row.chord-only {
@@ -284,9 +292,22 @@ button {
   pointer-events: auto;
 }
 
-.chord-token {
+/* Positions a chord over its character. Carries the lyric font so `1ch` here is
+   exactly one lyric character wide; the pill inside is free to be smaller. */
+.chord-anchor {
   position: absolute;
   top: 0;
+  font-family: var(--lyric-font);
+  font-size: var(--lyric-font-size);
+  line-height: 1;
+}
+
+.chord-anchor-flow {
+  position: static;
+}
+
+.chord-token {
+  position: static;
   pointer-events: auto;
   border: none;
   background: var(--accent-weak);
@@ -308,7 +329,6 @@ button {
 }
 
 .chord-token-flow {
-  position: static;
   transform: none;
 }
 
@@ -326,8 +346,8 @@ button {
   border: none;
   background: transparent;
   color: var(--text);
-  font-family: var(--mono);
-  font-size: 15px;
+  font-family: var(--lyric-font);
+  font-size: var(--lyric-font-size);
   line-height: 1.6;
   padding: 0;
 }

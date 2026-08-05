@@ -65,9 +65,6 @@ export function ChordToken({
       <input
         ref={inputRef}
         className={`chord-token chord-token-input${layout === "flow" ? " chord-token-flow" : ""}`}
-        style={
-          layout === "absolute" ? { left: `${chord.position}ch` } : undefined
-        }
         aria-label={`Rename chord ${chord.name}`}
         value={draft}
         onChange={(event) => setDraft(event.target.value)}
@@ -101,9 +98,6 @@ export function ChordToken({
       ref={buttonRef}
       type="button"
       className={`chord-token${focused ? " focused" : ""}${layout === "flow" ? " chord-token-flow" : ""}`}
-      style={
-        layout === "absolute" ? { left: `${chord.position}ch` } : undefined
-      }
       onFocus={onFocus}
       // Clicking selects rather than jumping straight into renaming — otherwise
       // the caret lands in a text input and Backspace edits the chord's name
