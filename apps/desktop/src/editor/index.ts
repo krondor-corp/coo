@@ -28,7 +28,6 @@ export { KeyboardHelp } from "./components/KeyboardHelp";
 export { LyricLine } from "./components/LyricLine";
 export { MetadataBar } from "./components/MetadataBar";
 export { PassthroughLine } from "./components/PassthroughLine";
-export { PrintSheet } from "./components/PrintSheet";
 export { RawSourceView } from "./components/RawSourceView";
 export type { Focus } from "./selection";
 export {

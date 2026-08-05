@@ -32,7 +32,7 @@ const GROUPS: Group[] = [
     title: "The song",
     shortcuts: [
       [`${MOD}M`, "Jump to the title"],
-      [`${MOD}P`, "Print (in the key you're seeing)"],
+      [`${MOD}P`, "Save a PDF of the chart, in the key you're seeing"],
       [`${MOD}E`, "Show the plain text behind the song"],
     ],
   },

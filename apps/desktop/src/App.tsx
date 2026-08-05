@@ -23,7 +23,6 @@ import {
   LyricLine,
   MetadataBar,
   PassthroughLine,
-  PrintSheet,
   RawSourceView,
   adjacentLyricLine,
   convertLyricToComment,
@@ -53,7 +52,9 @@ import {
   openFile,
   saveFile,
   saveFileAs,
+  savePdfAs,
 } from "./file";
+import { pdfFileName, renderSongPdf, toPrintableSong } from "./print";
 
 const EMPTY_SOURCE = `---
 title: Untitled
@@ -326,16 +327,27 @@ export function App() {
   }
 
   /**
-   * Hands off to the OS print dialog. The clean sheet is already in the DOM and
-   * hidden until `@media print` reveals it, rather than being written into a
-   * popup — Tauri's webview won't reliably give us `window.open`.
+   * Writes the chart out as a PDF. Not `window.print()`: Tauri's macOS webview
+   * silently ignores it, so there is no print dialog to hand off to. A PDF also
+   * happens to be what you'd want for sending a chart to the band.
    */
-  function printSong() {
-    if (parseError) {
+  async function printSong() {
+    const doc = documentRef.current;
+    if (parseError || !doc) {
       setStatus("Can't print until the song parses — fix it in plain text");
       return;
     }
-    window.print();
+    try {
+      const metadata = readSongSource(sourceRef.current)?.metadata ?? {};
+      const song = toPrintableSong(doc, metadata, transposeOffset);
+      const destination = await savePdfAs(
+        pdfFileName(song.title),
+        renderSongPdf(song),
+      );
+      if (destination) setStatus(`Saved ${fileNameFromPath(destination)}`);
+    } catch (error) {
+      setStatus(`Couldn't make the PDF: ${String(error)}`);
+    }
   }
 
   async function newDocument() {
@@ -525,20 +537,20 @@ export function App() {
           >
             <SaveAll size={16} />
           </button>
+          <button
+            type="button"
+            aria-label="Print"
+            title={`Print to PDF (${MOD}P)`}
+            onClick={printSong}
+          >
+            <Printer size={16} />
+          </button>
           <span className="file-title">
             {dirty ? "*" : ""}
             {fileNameFromPath(path)}
           </span>
         </div>
         <div className="toolbar-group">
-          <button
-            type="button"
-            aria-label="Print"
-            title={`Print (${MOD}P)`}
-            onClick={printSong}
-          >
-            <Printer size={16} />
-          </button>
           <button
             type="button"
             aria-label="Keyboard commands"
@@ -774,11 +786,6 @@ export function App() {
             </div>
           </div>
         </div>
-      )}
-
-      {/* Always mounted, invisible until printing — see the @media print rules. */}
-      {!parseError && (
-        <PrintSheet source={source} transposeOffset={transposeOffset} />
       )}
     </main>
   );

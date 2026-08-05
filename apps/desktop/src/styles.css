@@ -730,123 +730,48 @@ footer.error {
   text-decoration: underline;
 }
 
-/*
- * Printing. The sheet lives in the DOM at all times but is only laid out for
- * print; on screen it's pulled out of flow rather than `display: none`, so
- * printing never has to wait on a fresh render.
- */
-.print-sheet {
-  position: absolute;
-  width: 0;
-  height: 0;
-  overflow: hidden;
-  visibility: hidden;
-  pointer-events: none;
+.confirm-dialog {
+  width: 320px;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 16px 40px rgb(0 0 0 / 20%);
+  padding: 20px;
 }
 
-@media print {
-  /* Only the sheet prints — toolbar, metadata bar and editor all drop out. */
-  .app-shell > *:not(.print-sheet) {
-    display: none !important;
-  }
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
 
-  @page {
-    margin: 16mm;
-  }
+.confirm-actions button {
+  border: 1px solid var(--border);
+  background: transparent;
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
 
-  html,
-  body,
-  .app-shell {
-    background: white;
-    color: black;
-    height: auto;
-    overflow: visible;
-    display: block;
-  }
+.confirm-actions button.danger {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: white;
+}
 
-  .print-sheet {
-    position: static;
-    width: auto;
-    height: auto;
-    overflow: visible;
-    visibility: visible;
-    color: black;
-    font-family: var(--serif);
-  }
+/* The transpose indicator: the key you're seeing, when it isn't the written one. */
+.transpose-indicator {
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 0 2px;
+}
 
-  .print-sheet h1 {
-    font-size: 22pt;
-    font-weight: 400;
-    margin: 0 0 2pt;
-  }
-
-  .print-author {
-    margin: 0 0 6pt;
-    font-size: 11pt;
-    font-style: italic;
-  }
-
-  .print-meta {
-    margin: 0 0 16pt;
-    font-size: 9pt;
-    color: #555;
-  }
-
-  .print-diagrams {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12pt;
-    margin: 6pt 0 12pt;
-  }
-
-  .print-diagram {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .print-diagram-name {
-    font-size: 7pt;
-    font-weight: 700;
-    margin-bottom: 1px;
-  }
-
-  /* Chord/lyric pairs come out of the renderer as one table per line. */
-  .song-sheet {
-    font-family: var(--mono);
-    font-size: 10pt;
-    line-height: 1.5;
-  }
-
-  .song-sheet table.row {
-    border-collapse: collapse;
-    margin-bottom: 2pt;
-  }
-
-  .song-sheet .chord {
-    font-weight: 700;
-    white-space: pre;
-    padding: 0 2ch 0 0;
-  }
-
-  .song-sheet .lyrics {
-    white-space: pre;
-    padding: 0;
-  }
-
-  .song-sheet .comment {
-    font-style: italic;
-    color: #555;
-    margin: 12pt 0 4pt;
-  }
-
-  .song-sheet .paragraph {
-    margin-bottom: 10pt;
-    /* Keep a verse or chorus together rather than splitting it across pages. */
-    break-inside: avoid;
-  }
-
-  .song-sheet .literal {
-    white-space: pre;
-  }
+.transpose-indicator:hover {
+  text-decoration: underline;
 }

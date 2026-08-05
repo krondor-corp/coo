@@ -1,5 +1,5 @@
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
+import { readTextFile, writeFile, writeTextFile } from "@tauri-apps/plugin-fs";
 import {
   cleanup,
   fireEvent,
@@ -18,6 +18,7 @@ vi.mock("@tauri-apps/plugin-dialog", () => ({
 vi.mock("@tauri-apps/plugin-fs", () => ({
   readTextFile: vi.fn(),
   writeTextFile: vi.fn(),
+  writeFile: vi.fn(),
 }));
 
 /** Mod shortcuts dispatched with both modifiers set so the test doesn't depend on isMac() detection. */
@@ -440,47 +441,50 @@ describe("transpose is a view, not an edit", () => {
   });
 });
 
-describe("printing", () => {
-  it("prints the song, transposed to what's on screen", async () => {
-    const print = vi.fn();
-    vi.stubGlobal("print", print);
+describe("printing to PDF", () => {
+  it("writes a real PDF when the print button is used", async () => {
+    vi.mocked(save).mockResolvedValue("/tmp/untitled.pdf");
     render(<App />);
 
-    fireEvent.click(screen.getByLabelText("Transpose up a semitone"));
-    fireEvent.click(screen.getByLabelText("Transpose up a semitone"));
-    await waitFor(() => {
-      expect(document.querySelector(".chord-token")?.textContent).toBe("D");
+    fireEvent.click(screen.getByLabelText("Print"));
+
+    await waitFor(() => expect(writeFile).toHaveBeenCalled());
+    const [path, bytes] = vi.mocked(writeFile).mock.calls[0];
+    expect(path).toBe("/tmp/untitled.pdf");
+    // A real PDF, not an empty buffer or a stringified object.
+    const header = new TextDecoder().decode((bytes as Uint8Array).slice(0, 5));
+    expect(header).toBe("%PDF-");
+    expect((bytes as Uint8Array).byteLength).toBeGreaterThan(500);
+  });
+
+  it("suggests a filename from the song's title", async () => {
+    vi.mocked(save).mockResolvedValue(null);
+    render(<App />);
+    fireEvent.change(screen.getByLabelText("Title"), {
+      target: { value: "Twinkle Twinkle" },
     });
 
-    const sheet = document.querySelector(".print-sheet");
-    if (!sheet) throw new Error("expected a print sheet in the DOM");
-    // The sheet carries the transposed chord and the transposed key, while the
-    // editor's own key field still shows what the author wrote.
-    expect(sheet.textContent).toContain("D");
-    expect(sheet.querySelector(".print-meta")?.textContent).toContain("key: D");
-    expect((screen.getByLabelText("key") as HTMLInputElement).value).toBe("C");
-
     fireEvent.click(screen.getByLabelText("Print"));
-    expect(print).toHaveBeenCalled();
-    vi.unstubAllGlobals();
+
+    await waitFor(() => expect(save).toHaveBeenCalled());
+    expect(vi.mocked(save).mock.calls[0][0]).toMatchObject({
+      defaultPath: "twinkle-twinkle.pdf",
+    });
+  });
+
+  it("writes nothing when the save dialog is cancelled", async () => {
+    vi.mocked(save).mockResolvedValue(null);
+    render(<App />);
+    fireEvent.click(screen.getByLabelText("Print"));
+    await waitFor(() => expect(save).toHaveBeenCalled());
+    expect(writeFile).not.toHaveBeenCalled();
   });
 
   it("prints on the keyboard shortcut too", async () => {
-    const print = vi.fn();
-    vi.stubGlobal("print", print);
+    vi.mocked(save).mockResolvedValue("/tmp/untitled.pdf");
     render(<App />);
     modKeyDown("p");
-    await waitFor(() => expect(print).toHaveBeenCalled());
-    vi.unstubAllGlobals();
-  });
-
-  it("puts the title and the untransposed key on the sheet by default", async () => {
-    render(<App />);
-    const sheet = document.querySelector(".print-sheet");
-    expect(sheet?.querySelector("h1")?.textContent).toBe("Untitled");
-    expect(sheet?.querySelector(".print-meta")?.textContent).toContain(
-      "key: C",
-    );
+    await waitFor(() => expect(writeFile).toHaveBeenCalled());
   });
 });
 

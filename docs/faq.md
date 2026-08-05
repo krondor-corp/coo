@@ -28,7 +28,9 @@ Coo tells you what's wrong — a missing title, a tempo that isn't a number — 
 
 ## Can I print a song?
 
-Yes — **⌘P**. You get a clean sheet with the title, the song details, any chord diagrams, and the chords over the lyrics; none of the editor's furniture comes along. It prints in whatever key you're currently viewing, so transposing for a singer and then printing gives you the chart you'll actually play from.
+Yes — **⌘P** saves it as a PDF, which you can then open and print or send to the band. You get the title, the song details, any chord diagrams, and the chords over the lyrics; none of the editor's furniture comes along.
+
+It uses whatever key you're currently viewing, so transposing for a singer first gives you the chart you'll actually play from.
 
 ## Is there a phone or tablet version?
 

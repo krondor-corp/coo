@@ -47,7 +47,9 @@ The `−`/`+` buttons next to the key shift every chord on screen and show where
 
 ## print it
 
-**⌘P** prints a clean sheet — title, the details, chord diagrams, and the song, without any of the editor around it. It prints **the key you're currently looking at**, so if you've transposed down a tone for a singer, that's what comes out of the printer. Your file still keeps the original.
+**⌘P** saves a clean PDF of the chart — title, the details, chord diagrams, and the chords over the lyrics, with none of the editor around it. Open it and print, or send it to the band.
+
+It uses **the key you're currently looking at**, so if you've transposed down a tone for a singer, that's the chart you get. Your file still keeps the original.
 
 ## save
 
