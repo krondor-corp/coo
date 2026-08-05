@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/krondor-corp/coo/compare/coo-v0.5.0...coo-v0.5.1) (2026-08-05)
+
+
+### Bug Fixes
+
+* **print:** stop bare interlude chords printing on top of each other ([df352e9](https://github.com/krondor-corp/coo/commit/df352e97ae8aea2001ab65bcd4079fc4bd81843c))
+
 ## [0.5.0](https://github.com/krondor-corp/coo/compare/coo-v0.4.0...coo-v0.5.0) (2026-08-05)
 
 
