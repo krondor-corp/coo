@@ -1,6 +1,6 @@
 [package]
 name = "coo"
-version = "0.5.0"
+version = "0.5.1"
 description = "A minimal ChordPro editor"
 authors = ["Coo contributors"]
 edition = "2021"
